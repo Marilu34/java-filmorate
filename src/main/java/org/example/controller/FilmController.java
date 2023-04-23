@@ -48,14 +48,16 @@ public class FilmController {
             log.debug("Дата выпуска Film :{}", film.getReleaseDate());
             throw new ValidationException("Дата выпуска Film недействительна");
         }
-        if (film.getName().isBlank()|| film.getName()==null) {
-                       throw new ValidationException("Имя Film не может быть пустым");
-        } if (film.getDuration() <= 0 || film.getDuration()> 200) {
+        if (film.getName().isBlank() || film.getName() == null) {
+            throw new ValidationException("Имя Film не может быть пустым");
+        }
+        if (film.getDuration() <= 0 || film.getDuration() > 200) {
             throw new ValidationException("Продолжительность Film не может быть отрицательным");
-           }
-        if ( film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length()>200) {
+        }
+        if (film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length() > 200) {
             throw new ValidationException("Описание Film не может быть больше 200 символов");
-        }  }
+        }
+    }
 
     @GetMapping
     public Collection<Film> getAll() {
@@ -64,7 +66,7 @@ public class FilmController {
 
     @PutMapping
     public Film put(@RequestBody @Valid Film film) {
-        if (((id == 0) || (id <0 ))|(film.getName() == null)){
+        if (((id == 0) || (id < 0)) | (film.getName() == null)) {
             throw new ValidationException("id должен быть больше 0");
         }
         if (!films.containsKey(film.getId())) {

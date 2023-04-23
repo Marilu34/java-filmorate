@@ -32,7 +32,7 @@ public class UserController {
     public User create(@RequestBody @Valid User user) {
         if (users.containsValue(user)) {
             users.put(user.getId(), user);
-            log.info("Пользователь с id={} обновлен", user.getId());
+            log.info("Пользователь с id = {} обновлен", user.getId());
         }
         user.setId(generateId());
         validate(user);
