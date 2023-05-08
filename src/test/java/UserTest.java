@@ -14,13 +14,13 @@ public class UserTest {
 
     public void testUserValidateRightCreation() {
         User user = new User(3, "yandex@ya.ru", "yandex", "Test", LocalDate.of(2000, 1, 1), new HashSet<>());
-        assertEquals(user, userStorage.addUser(user));
+        assertEquals(user, userStorage.createUser(user));
     }
 
     @Test
     public void testUserWithoutName() {
         User user = new User(33, "yandex@ya.ru", "", "yandex", LocalDate.of(2000, 1, 1), new HashSet<>());
-        userStorage.addUser(user);
+        userStorage.createUser(user);
         assertEquals(user.getName(), user.getLogin());
     }
 }
