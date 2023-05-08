@@ -1,10 +1,13 @@
 package org.example.storage.user;
 
 
+import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.User;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,14 +27,16 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(User user) {
         user.setId(generateID());
+        validate(user);
         users.put(user.getId(), user);
+
         return user;
     }
 
     @Override
     public User updateUser(User user) {
         if (user.getId() <= 0) {
-            throw new ValidationException("Нельзя обновить Пользователя с айди =" + user.getId());
+            throw new NotFoundException("Нельзя обновить Пользователя с айди =" + user.getId());
         }
         if (users.containsKey(user.getId())) {
             users.replace(user.getId(), user);
@@ -99,7 +104,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
 
-    private void validate(User user) {
+    private void validate(@Valid User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }

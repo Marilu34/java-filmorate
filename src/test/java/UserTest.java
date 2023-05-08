@@ -19,8 +19,9 @@ public class UserTest {
 
     @Test
     public void testUserWithoutName() {
-        User user = new User(33, "yandex@ya.ru", "", "yandex", LocalDate.of(2000, 1, 1), new HashSet<>());
+        User user = new User(33, "yandex@ya.ru", "yandex", "", LocalDate.of(2000, 1, 1), new HashSet<>());
         userStorage.createUser(user);
+
         assertEquals(user.getName(), user.getLogin());
     }
 }
