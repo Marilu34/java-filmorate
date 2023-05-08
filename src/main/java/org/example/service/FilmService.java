@@ -30,7 +30,7 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
-    public void addLike(int filmId, int userId) {
+    public void addLike (int filmId, int userId) {
         filmStorage.addLike(filmId, userId);
     }
 
