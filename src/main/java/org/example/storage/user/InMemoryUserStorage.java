@@ -78,17 +78,17 @@ public class InMemoryUserStorage implements UserStorage {
     public ArrayList<User> getCommonFriends(int userId, int userIdToCompare) {
         User userFirst = users.get(userId);
         User userSecond = users.get(userIdToCompare);
-        Set<Integer> CommonFriendsList = new HashSet<>();
+        Set<Integer> commonFriendsList = new HashSet<>();
         for (Integer friendsUserFirst : userFirst.getFriendsIds()) {
             for (Integer friendsUserSecond : userSecond.getFriendsIds()) {
                 if (friendsUserFirst.equals(friendsUserSecond)) {
-                    CommonFriendsList.add(friendsUserFirst);
+                    commonFriendsList.add(friendsUserFirst);
                 }
             }
         }
         ArrayList<User> commonFriends = new ArrayList<>();
 
-        for (Integer friendId : CommonFriendsList) {
+        for (Integer friendId : commonFriendsList) {
             commonFriends.add(users.get(friendId));
         }
         return commonFriends;
