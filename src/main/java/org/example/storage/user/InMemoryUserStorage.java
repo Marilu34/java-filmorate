@@ -5,7 +5,6 @@ import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.User;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
