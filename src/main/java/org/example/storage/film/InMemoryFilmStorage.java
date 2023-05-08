@@ -4,6 +4,7 @@ import lombok.Data;
 import org.example.exceptions.ValidationException;
 import org.example.model.Film;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,14 +58,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public ArrayList<Film> getPopularFilms(int count) {
         return films.values().stream()
-                .sorted(this::compare)
+                .sorted(this::compareFilms)
                 .limit(count)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private int compare(Film f0, Film f1) {
+    private int compareFilms(Film filmFirst, Film filmSecond) {
         int result = 0;
-        if (f0.getUserIdLikes().size() > f1.getUserIdLikes().size()) {
+        if (filmFirst.getUserIdLikes().size() > filmSecond.getUserIdLikes().size()) {
             result = -1;
         }
         return result;
@@ -75,7 +76,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
 
-    private void validate(Film film) {
+    private void validate(@Validated  Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_RELEASE)) {
             throw new ValidationException("Дата выпуска Film недействительна");
         }
@@ -88,6 +89,5 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length() > 200) {
             throw new ValidationException("Описание Film не может быть больше 200 символов");
         }
-
     }
 }

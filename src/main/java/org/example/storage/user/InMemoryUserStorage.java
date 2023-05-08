@@ -31,7 +31,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User updateUser(User user) {
         if (user.getId() <= 0) {
-            throw new ValidationException("Can't update user with id=" + user.getId());
+            throw new ValidationException("Нельзя обновить Пользователя с айди =" + user.getId());
         }
         if (users.containsKey(user.getId())) {
             users.replace(user.getId(), user);
@@ -65,33 +65,33 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public ArrayList<User> getFriends(int userId) {
         User user = users.get(userId);
-        Set <Integer> listOfFriendsIds = user.getFriendsIds();
-        ArrayList<User> result = new ArrayList<>();
+        Set<Integer> listFriendsIds = user.getFriendsIds();
+        ArrayList<User> friendList = new ArrayList<>();
 
-        for (Integer friendId : listOfFriendsIds) {
-            result.add(users.get(friendId));
+        for (Integer friendId : listFriendsIds) {
+            friendList.add(users.get(friendId));
         }
-        return result;
+        return friendList;
     }
 
     @Override
     public ArrayList<User> getCommonFriends(int userId, int userIdToCompare) {
         User userFirst = users.get(userId);
         User userSecond = users.get(userIdToCompare);
-        Set <Integer> listOfCommonFriendsIds = new HashSet<Integer>();
-        for (Integer friendId : userFirst.getFriendsIds()) {
-            for (Integer friendIdSecondUser : userSecond.getFriendsIds()) {
-                if (friendId.equals(friendIdSecondUser)) {
-                    listOfCommonFriendsIds.add(friendId);
+        Set<Integer> CommonFriendsList = new HashSet<>();
+        for (Integer friendsUserFirst : userFirst.getFriendsIds()) {
+            for (Integer friendsUserSecond : userSecond.getFriendsIds()) {
+                if (friendsUserFirst.equals(friendsUserSecond)) {
+                    CommonFriendsList.add(friendsUserFirst);
                 }
             }
         }
-        ArrayList<User>  result = new ArrayList<>();
+        ArrayList<User> commonFriends = new ArrayList<>();
 
-        for (Integer friendId : listOfCommonFriendsIds) {
-            result.add(users.get(friendId));
+        for (Integer friendId : CommonFriendsList) {
+            commonFriends.add(users.get(friendId));
         }
-        return result;
+        return commonFriends;
     }
 
     private int generateID() {
@@ -109,8 +109,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("логин не может содержать пробелы");
         }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            // user.setEmail(user.getEmail());
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
             throw new ValidationException("почта не может быть пустой");
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
