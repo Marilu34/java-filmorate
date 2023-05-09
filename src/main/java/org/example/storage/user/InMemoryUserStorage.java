@@ -1,7 +1,5 @@
 package org.example.storage.user;
 
-
-import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.User;
 import org.springframework.stereotype.Component;
