@@ -7,6 +7,7 @@ import org.example.exceptions.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -14,20 +15,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandlers {
 
     @ExceptionHandler
-    public ResponseEntity<String> handleAlreadyExistException(final AlreadyExistException e) {
-        log.error("500 {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse  handleAlreadyExistException(final AlreadyExistException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(
+                e.getMessage()
+        );
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleValidationException(final ValidationException e) {
-        log.error("400 {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(final ValidationException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(
+                e.getMessage()
+        );
     }
 
+
+    //    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public ResponseEntity<String> handleNotFoundException(final NotFoundException e) {
+//        log.error("404 {}", e.getMessage());
+//        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+//    }
     @ExceptionHandler
-    public ResponseEntity<String> handleNotFoundException(final NotFoundException e) {
-        log.error("404 {}", e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(
+                e.getMessage()
+        );
     }
 }

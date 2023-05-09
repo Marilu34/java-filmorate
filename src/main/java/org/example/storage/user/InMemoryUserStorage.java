@@ -35,11 +35,12 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User updateUser(User user) {
         if (user.getId() <= 0) {
-            throw new NotFoundException("Нельзя обновить Пользователя с айди =" + user.getId());
+            throw new ValidationException("Нельзя обновить Пользователя с айди =" + user.getId());
         }
         if (users.containsKey(user.getId())) {
             users.replace(user.getId(), user);
         }
+
         return user;
     }
 

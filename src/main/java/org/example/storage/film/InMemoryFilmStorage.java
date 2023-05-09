@@ -1,6 +1,7 @@
 package org.example.storage.film;
 
 import lombok.Data;
+import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.Film;
 import org.springframework.stereotype.Component;
