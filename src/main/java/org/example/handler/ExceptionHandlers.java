@@ -5,7 +5,6 @@ import org.example.exceptions.AlreadyExistException;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,7 +15,7 @@ public class ExceptionHandlers {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse  handleAlreadyExistException(final AlreadyExistException e) {
+    public ErrorResponse handleAlreadyExistException(final AlreadyExistException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(
                 e.getMessage()
