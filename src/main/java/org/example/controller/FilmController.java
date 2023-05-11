@@ -36,7 +36,6 @@ public class FilmController {
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
-        validateName(film);
         checkFilm(film.getId(), false);
         log.info("Фильм " + film.getName() + " с айди =" + film.getId() + " создан");
         return filmService.add(film);
@@ -83,14 +82,6 @@ public class FilmController {
             }
         } else if (filmId != 0 && filmService.getFilmById(filmId) != null) {
             throw new AlreadyExistException("Фильм с айди =" + filmId + " уже создан");
-        }
-    }
-
-    private void validateName(Film film) {
-        for (Film validateFilm : filmService.getAll()) {
-            if (film.getName().equals(validateFilm.getName())) {
-                throw new AlreadyExistException("Фильм " + film.getName() + " уже есть в базе");
-            }
         }
     }
 }
