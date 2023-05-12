@@ -1,80 +1,111 @@
 package org.example.controller;
 
-
-import lombok.Data;
-
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.AlreadyExistException;
+import org.example.exceptions.NotFoundException;
+
 import org.example.exceptions.ValidationException;
 import org.example.model.User;
-import org.springframework.validation.annotation.Validated;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.example.service.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
+import java.util.ArrayList;
 
-import java.util.Collection;
-import java.util.HashMap;
-
-@Data
 @Slf4j
 @RestController
-@Validated
 @RequestMapping("/users")
 public class UserController {
-    private HashMap<Integer, User> users = new HashMap<>();
-    private int id = 1;//не може начинаться с нуля
 
-    private int generateId() {
-        return id++;
+    @Autowired
+    private UserService userService;
+
+    @GetMapping
+    public ArrayList<User> getAll() {
+        return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable int id) {
+        validateIfUserExist(id, true);
+        return userService.getUser(id);
     }
 
     @PostMapping
-    public User create(@RequestBody @Valid User user) {
-        if (users.containsValue(user)) {
-            users.put(user.getId(), user);
-            log.info("Пользователь с id = {} обновлен", user.getId());
-        }
-        validate(user);
-        user.setId(generateId());
-        users.put(user.getId(), user);
-        log.info("Создан User с id:{}", user.getId());
-        return user;
-    }
-
-    private void validate(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getLogin() == null || user.getLogin().isBlank()) {
-            throw new ValidationException("логин не может быть пустым");
-        }
-        if (user.getLogin().contains(" ")) {
-            throw new ValidationException("логин не может содержать пробелы");
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            user.setEmail(user.getEmail());
-            log.debug("У User с id:{} нет почты", user.getId());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("дата рождения должна быть не будущей");
-        }
-    }
-
-    @GetMapping
-    public Collection<User> getAll() {
-
-        return users.values();
+    public User createUser(@Valid @RequestBody User user) {
+        validateIfUserExist(user.getId(), false);
+        validateUserName(user);
+        log.info("User " + user.getEmail() + "was added");
+        return userService.add(user);
     }
 
     @PutMapping
-    public User put(@RequestBody @Valid User user) {
-        if (!users.containsKey(user.getId())) {
-            throw new ValidationException("User не найден");
-        } else {
-            validate(user);
-            users.put(user.getId(), user);
-            log.info("User с id:{} update", user.getId());
+    public User updateUser(@Valid @RequestBody User user) {
+        validateIfUserExist(user.getId(), true);
+        validateEmail(user);
+        validateUserName(user);
+        log.info("User " + user.getEmail() + "was updated");
+        return userService.update(user);
+    }
+
+    @DeleteMapping
+    public void deleteUser(@RequestBody User user) {
+        validateIfUserExist(user.getId(), true);
+        log.info("User with id=" + user.getId() + " has been deleted");
+        userService.deleteUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        validateIfUserExist(id, true);
+        validateIfUserExist(friendId, true);
+        log.info("User with id=" + id + " add friend with id=" + friendId);
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
+        validateIfUserExist(id, true);
+        validateIfUserExist(friendId, true);
+        log.info("User with id=" + id + " delete friend with id=" + friendId);
+        userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public ArrayList<User> getFriends(@PathVariable int id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public ArrayList<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
+        validateIfUserExist(id, true);
+        validateIfUserExist(otherId, true);
+        return userService.getCommonFriends(id, otherId);
+    }
+
+    private void validateEmail(User user) {
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            throw new ValidationException("Can't update user with empty email");
         }
-        return user;
+    }
+
+    private void validateUserName(User user) {
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+    }
+
+    private void validateIfUserExist(int userId, boolean ifUserShouldExist) {
+        if (ifUserShouldExist) {
+            if (userService.getUser(userId) == null || userId < 0) {
+                throw new NotFoundException("User with id=" + userId + " is not exist");
+            }
+        } else {
+            if (userService.getUser(userId) != null) {
+                throw new AlreadyExistException("User with id=" + userId + " already exist");
+            }
+        }
     }
 }
