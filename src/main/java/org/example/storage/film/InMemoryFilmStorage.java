@@ -1,23 +1,25 @@
 package org.example.storage.film;
 
 import lombok.Data;
+import org.example.MPA.MPA;
 import org.example.exceptions.ValidationException;
 import org.example.model.Film;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @Data
+@Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
-    private static final Map<Integer, Film> films = new HashMap<>();
     private static int filmID = 1;
+    Film film = new Film();
+
+    private static final Map<Integer, Film> films = new HashMap<>();
 
     @Override
     public ArrayList<Film> getAllFilms() {
@@ -28,6 +30,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film createFilm(Film film) {
         validate(film);
         film.setId(generateID());
+      //  updateRating(MPArating);
         films.put(film.getId(), film);
         return film;
     }
@@ -37,6 +40,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.replace(film.getId(), film);
         return film;
     }
+
+
 
     @Override
     public Film getFilmById(int filmId) {
@@ -89,5 +94,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length() > 200) {
             throw new ValidationException("Описание Film не может быть больше 200 символов");
         }
+//        if (film.getMPArating().isBlank()) {
+//            throw new ValidationException("Рейтинг Film не может быть пустым");
+//        }
+
     }
 }

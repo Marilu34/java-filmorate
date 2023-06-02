@@ -5,7 +5,9 @@ import org.example.storage.film.FilmStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -18,7 +20,7 @@ public class FilmService {
         this.filmStorage = filmStorage;
     }
 
-    public ArrayList<Film> getAll() {
+    public List<Film> getAll() {
         return filmStorage.getAllFilms();
     }
 
@@ -38,11 +40,11 @@ public class FilmService {
         filmStorage.deleteLike(filmId, userId);
     }
 
-    public ArrayList<Film> getMostPopularFilms(Integer id) {
+    public List<Film> getMostPopularFilms(Integer id) {
         return filmStorage.getPopularFilms(id);
     }
 
-    public Film getFilmById(Integer filmId) {
+    public Film getFilmById(Integer filmId) throws SQLException {
         return filmStorage.getFilmById(filmId);
     }
 }

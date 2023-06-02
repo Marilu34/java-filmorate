@@ -1,2 +1,3 @@
 # java-filmorate
-Template repository for Filmorate project.
+
+![](C:\Users\Comp\IdeaProjects\java-filmorate\src\main\resources\picture\schema.png)

@@ -4,13 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.AlreadyExistException;
 import org.example.exceptions.NotFoundException;
 import org.example.model.Film;
+
 import org.example.service.FilmService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -24,32 +28,32 @@ public class FilmController {
     private UserService userService;
 
     @GetMapping
-    public ArrayList<Film> getAll() {
+    public List<Film> getAll() {
         return filmService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable int id) {
+    public Film getFilmById(@PathVariable int id) throws SQLException {
         checkFilm(id, true);
         return filmService.getFilmById(id);
     }
 
     @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) throws SQLException {
         checkFilm(film.getId(), false);
         log.info("Фильм " + film.getName() + " с айди =" + film.getId() + " создан");
         return filmService.add(film);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) throws SQLException {
         checkFilm(film.getId(), true);
         log.info("Фильм " + film.getName() + " с айди = " + film.getId() + " обновлен");
         return filmService.update(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable int id, @PathVariable int userId) {
+    public void addLike(@PathVariable int id, @PathVariable int userId) throws SQLException {
         checkFilm(id, true);
         checkUser(userId);
         log.info("Пользователь  с айди =" + id + " поставил свой лайк Пользователю с айди" + userId);
@@ -57,7 +61,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) throws SQLException {
         checkFilm(id, true);
         checkUser(userId);
         log.info("Пользователь  с айди = " + id + " удалил свой лайк у Пользователя с айди " + userId);
@@ -65,7 +69,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public ArrayList<Film> getMostPopularFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<Film> getMostPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getMostPopularFilms(count);
     }
 
@@ -75,7 +79,7 @@ public class FilmController {
         }
     }
 
-    private void checkFilm(int filmId, boolean isValid) {
+    private void checkFilm(int filmId, boolean isValid) throws SQLException {
         if (isValid) {
             if (filmService.getFilmById(filmId) == null) {
                 throw new NotFoundException("Фильм с айди =" + filmId + " не найден");

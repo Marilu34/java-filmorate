@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.model.User;
 import org.example.storage.user.UserStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,12 +14,12 @@ public class UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage")  UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
     public ArrayList<User> getAll() {
-        return userStorage.getAllUsers();
+        return (ArrayList<User>) userStorage.getAllUsers();
     }
 
     public User add(User user) {
@@ -47,11 +48,11 @@ public class UserService {
         userStorage.deleteUser(user);
     }
 
-    public ArrayList<User> getFriends(int userId) {
-        return userStorage.getFriends(userId);
+    public List<User> getFriends(int userId) {
+        return userStorage.getFriendsList(userId);
     }
 
-    public ArrayList<User> getCommonFriends(int userId, int userIdToCompare) {
+    public List<User> getCommonFriends(int userId, int userIdToCompare) {
         return userStorage.getCommonFriends(userId, userIdToCompare);
     }
 }

@@ -1,12 +1,12 @@
 package org.example.storage.user;
 
 import org.example.model.User;
-
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public interface UserStorage {
 
-    ArrayList<User> getAllUsers();
+    List<User> getAllUsers();
 
     User createUser(User user);
 
@@ -14,13 +14,15 @@ public interface UserStorage {
 
     User getUser(int userId);
 
+
+
     void addFriend(int userId, int friendId);
 
     void deleteFriend(int userId, int friendId);
 
-    void deleteUser(User user);
+    User deleteUser(User user);
 
-    ArrayList<User> getFriends(int userId);
+    List<User> getFriendsList(int userId);
 
-    ArrayList<User> getCommonFriends(int userId, int userIdToCompare);
+    List<User> getCommonFriends(int userId, int userIdToCompare);
 }
