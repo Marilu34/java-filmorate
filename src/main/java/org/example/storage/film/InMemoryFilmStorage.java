@@ -1,102 +1,89 @@
 package org.example.storage.film;
 
-import lombok.Data;
-import org.example.MPA.MPA;
+import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.AlreadyExistException;
+import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.Film;
-import lombok.extern.slf4j.Slf4j;
+import org.example.storage.film.storage.FilmStorage;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
+
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
-@Component
-@Data
 @Slf4j
+@Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
+    private final Map<Long, Film> filmMap = new HashMap<>();
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
-    private static int filmID = 1;
-    Film film = new Film();
+    private int id = 1;
 
-    private static final Map<Integer, Film> films = new HashMap<>();
-
-    @Override
-    public ArrayList<Film> getAllFilms() {
-        return new ArrayList<>(films.values());
+    private int generateID() {
+        return id++;
     }
 
     @Override
-    public Film createFilm(Film film) {
+    public Film addFilm(Film film) {
+        if (filmMap.containsKey(film.getId())) {
+            log.debug("Film id:{}", film.getId());
+            throw new AlreadyExistException("Id already use");
+        }
+        film.setUsersLike(new HashSet<>());
         validate(film);
         film.setId(generateID());
-      //  updateRating(MPArating);
-        films.put(film.getId(), film);
+        filmMap.put(film.getId(), film);
+        log.info("film with id:{} create", film.getId());
         return film;
+    }
+
+    @Override
+    public void deleteFilm(long filmId) {
+        if (!filmMap.containsKey(filmId)) {
+            throw new NotFoundException(String.format("Film with id:%s not found", filmId));
+        }
+        filmMap.remove(filmId);
     }
 
     @Override
     public Film updateFilm(Film film) {
-        films.replace(film.getId(), film);
+        if (!filmMap.containsKey(film.getId())) {
+            log.debug("Film id:{}", film.getId());
+            throw new NotFoundException("Id not found");
+        }
+        if (film.getUsersLike() == null) {
+            film.setUsersLike(filmMap.get(film.getId()).getUsersLike());
+        }
+        validate(film);
+        filmMap.put(film.getId(), film);
+        log.info("Film with id:{} update", film.getId());
         return film;
     }
 
-
-
-    @Override
-    public Film getFilmById(int filmId) {
-        return films.get(filmId);
-    }
-
-    @Override
-    public void addLike(int filmId, int userId) {
-        Film film = films.get(filmId);
-        film.getUserIdLikes().add(userId);
-    }
-
-    @Override
-    public void deleteLike(int filmId, int userId) {
-        Film film = films.get(filmId);
-        film.getUserIdLikes().remove(userId);
-    }
-
-    @Override
-    public ArrayList<Film> getPopularFilms(int count) {
-        return films.values().stream()
-                .sorted(this::compareFilms)
-                .limit(count)
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    private int compareFilms(Film filmFirst, Film filmSecond) {
-        int result = 0;
-        if (filmFirst.getUserIdLikes().size() > filmSecond.getUserIdLikes().size()) {
-            result = -1;
-        }
-        return result;
-    }
-
-    private int generateID() {
-        return filmID++;
-    }
-
-
-    private void validate(@Validated Film film) {
+    private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_RELEASE)) {
-            throw new ValidationException("Дата выпуска Film недействительна");
+            log.debug("film not valid release date:{}", film.getReleaseDate());
+            throw new ValidationException("Release date not valid");
         }
-        if (film.getName().isBlank() || film.getName() == null) {
-            throw new ValidationException("Имя Film не может быть пустым");
-        }
-        if (film.getDuration() <= 0 || film.getDuration() > 200) {
-            throw new ValidationException("Продолжительность Film не может быть отрицательным");
-        }
-        if (film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length() > 200) {
-            throw new ValidationException("Описание Film не может быть больше 200 символов");
-        }
-//        if (film.getMPArating().isBlank()) {
-//            throw new ValidationException("Рейтинг Film не может быть пустым");
-//        }
+    }
 
+    @Override
+    public Film findFilmById(long filmId) {
+        if (!filmMap.containsKey(filmId)) {
+            throw new NotFoundException(String.format("film with id:%s not found", filmId));
+        }
+        return filmMap.get(filmId);
+    }
+
+    @Override
+    public Collection<Film> getAllFilms() {
+        return filmMap.values();
+    }
+
+    @Override
+    public void deleteAllFilms() {
+        filmMap.clear();
     }
 }

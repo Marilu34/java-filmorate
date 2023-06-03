@@ -1,22 +1,11 @@
-INSERT INTO MPA (MPA_name) SELECT 'G'
-WHERE NOT EXISTS (SELECT MPA_name FROM MPA WHERE MPA_name = 'G');
-
-INSERT INTO MPA (MPA_name) SELECT 'PG'
-WHERE NOT EXISTS (SELECT MPA_name FROM MPA WHERE MPA_name = 'PG');
-
-INSERT INTO MPA (MPA_name) SELECT 'PG-13'
-WHERE NOT EXISTS (SELECT MPA_name FROM MPA WHERE MPA_name = 'PG-13');
-
-INSERT INTO MPA (MPA_name) SELECT 'R'
-WHERE NOT EXISTS (SELECT MPA_name FROM MPA WHERE MPA_name = 'R');
-
-INSERT INTO MPA (MPA_name) SELECT 'NC-17'
-WHERE NOT EXISTS (SELECT MPA_name FROM MPA WHERE MPA_name = 'NC-17');
-
-INSERT INTO genre (genre_id, genre_name)
-    VALUES (1, 'Комедия'),
-           (2, 'Драма'),
-           (3, 'Мультфильм'),
-           (4, 'Фантастика'),
-           (5, 'Триллер'),
-           (6, 'Боевик');
+MERGE INTO GENRES KEY (genre_id) VALUES (1, 'Комедия');
+MERGE INTO GENRES KEY (genre_id) VALUES (2, 'Драма');
+MERGE INTO GENRES KEY (genre_id) VALUES (3, 'Мультфильм');
+MERGE INTO GENRES KEY (genre_id) VALUES (4, 'Триллер');
+MERGE INTO GENRES KEY (genre_id) VALUES (5, 'Документальный');
+MERGE INTO GENRES KEY (genre_id) VALUES (6, 'Боевик');
+MERGE INTO MPA KEY (MPA_ID) VALUES ( 1, 'G' );
+MERGE INTO MPA KEY (MPA_ID) VALUES ( 2, 'PG' );
+MERGE INTO MPA KEY (MPA_ID) VALUES ( 3, 'PG-13' );
+MERGE INTO MPA KEY (MPA_ID) VALUES ( 4, 'R' );
+MERGE INTO MPA KEY (MPA_ID) VALUES ( 5, 'NC-17' );

@@ -1,80 +1,73 @@
 package org.example.controller;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.example.model.User;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-import org.example.service.UserService;
-
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
-
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(@Qualifier("UserServiceDb") UserService userService) {
         this.userService = userService;
     }
 
-
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        return userService.add(user);
+    public User create(@Valid @RequestBody User user) {
+        return userService.getUserStorage().addUser(user);
     }
 
 
     @GetMapping
-    public Collection<User> getAllUsers() {
-        return userService.getAll();
+    public Collection<User> getAll() {
+        return userService.getUserStorage().getAllUsers();
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        return userService.update(user);
+    public User put(@Valid @RequestBody User user) {
+        return userService.getUserStorage().updateUser(user);
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable int id) {
+    public User findUser(@PathVariable("userId") long userId) {
+        return userService.getUserStorage().findUserById(userId);
+    }
 
-        return userService.getUser(id);
+    @DeleteMapping
+    public void deleteAllUsers() {
+        userService.getUserStorage().deleteAllUsers();
     }
 
     @DeleteMapping("{userId}")
-    public void deleteUser(@PathVariable("userId") User user) {
-        log.info("User with id=" + user.getId() + " has been deleted");
-        userService.deleteUser(user);
+    public void deleteUser(@PathVariable("userId") long userId) {
+        userService.getUserStorage().deleteUser(userId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
-    public void createFriend(@PathVariable("userId") int userId,
-                          @PathVariable("friendId") int friendId) {
+    public void addFriend(@PathVariable("userId") long userId,
+                          @PathVariable("friendId") long friendId) {
         userService.addFriend(userId, friendId);
     }
 
     @GetMapping("/{userId}/friends")
-    public List<User> getFriendList(@PathVariable("userId") int userId) {
-        return userService.getFriends(userId);
+    public List<User> getFriends(@PathVariable("userId") long userId) {
+        return userService.getFriendList(userId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
-    public void deleteFriend(@PathVariable("userId") int userId,
-                             @PathVariable("friendId") int friendId) {
+    public void deleteFriend(@PathVariable("userId") long userId,
+                             @PathVariable("friendId") long friendId) {
         userService.deleteFriend(userId, friendId);
     }
 
     @GetMapping("/{userId}/friends/common/{friendsId}")
-    public List<User> getCommonFriendList(@PathVariable int userId,
-                                       @PathVariable int friendsId) {
-        return userService.getCommonFriends(userId, friendsId);
+    public List<User> getMutualFriends(@PathVariable long userId,
+                                       @PathVariable long friendsId) {
+        return userService.getListMutualFriends(userId, friendsId);
     }
 }

@@ -1,37 +1,36 @@
 package org.example.model;
 
 import lombok.*;
-import org.example.MPA.MPA;
+import org.example.MPA.Mpa;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Film {
-
-    private int id;
-
-    @NotNull(message = "Имя должно содержать символы")
-    @NotEmpty
+    private long id;
+    @NotBlank(message = "name is blank")
     private String name;
-
-    @Size(max = 200, message = "вместимость описания до 200 символов")
+    @NotBlank(message = "description is blank")
+    @Size(max = 200, message = "max size description 200 symbols")
     private String description;
-
-    @Past(message = "дата выпуска не должна быть будущей")
+    @Past(message = "release date cannot be in future")
     private LocalDate releaseDate;
-
-    @Positive(message = "продолжительность должна быть отрицательной")
-    private int duration;
-
-    private Set<Integer> userIdLikes = new HashSet<>();
-
-    private Set<Genre> genre;
-    @NotNull private MPA mpa;
+    @NotNull
+    @Positive(message = "duration is negative")
+    private Integer duration;
+    private Set<Long> usersLike;
+    private Set<Genre> genres;
+    private Mpa mpa;
     private int rate;
 
     public Map<String, Object> toMap() {
