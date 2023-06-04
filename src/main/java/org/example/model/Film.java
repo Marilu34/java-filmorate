@@ -28,8 +28,10 @@ public class Film {
     @NotNull
     @Positive(message = "duration is negative")
     private Integer duration;
+
     private Set<Integer> usersLike;
-    private Set<Genre> genres;
+
+    private Set<Genres> genres;
     private Mpa mpa;
     private int rate;
 

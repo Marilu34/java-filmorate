@@ -6,7 +6,6 @@ import org.example.exceptions.NotFoundException;
 import org.example.model.Film;
 import org.example.service.FilmService;
 
-import org.example.storage.film.storage.FilmStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import org.springframework.validation.annotation.Validated;
@@ -28,27 +27,29 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@Validated @RequestBody Film film) {
-        checkFilm((int) film.getId(), false);
-        log.info("Фильм " + film.getName() + " с айди =" + film.getId() + " создан");
-        return filmService.getFilmStorage().addFilm(film);
+    public Film createFilm(@Validated @RequestBody Film film) {
+        checkFilm(film.getId(), false);
+        log.info("Фильм " + film.getName() + " с id =" + film.getId() + " создан");
+        return filmService.getFilmStorage().createFilm(film);
     }
 
 
     @GetMapping
-    public Collection<Film> getAll() {
+    public Collection<Film> getAllFilms() {
         return filmService.getFilmStorage().getAllFilms();
     }
 
     @PutMapping
-    public Film put(@Valid @RequestBody Film film) {
+    public Film  updateFilm(@Valid @RequestBody Film film) {
+        checkFilm(film.getId(), true);
+        log.info("Фильм " + film.getName() + " с id =" + film.getId() + " обновлен");
         return filmService.getFilmStorage().updateFilm(film);
     }
 
     @GetMapping("/{filmId}")
     public Film getFilmById(@PathVariable("filmId") int filmId) {
         checkFilm(filmId, true);
-        return filmService.getFilmStorage().findFilmById(filmId);
+        return filmService.getFilmStorage().getFilmById(filmId);
     }
 
     @DeleteMapping
@@ -58,31 +59,36 @@ public class FilmController {
 
     @DeleteMapping("/{filmId}")
     public void deleteFilm(@PathVariable("filmId") int filmId) {
+        checkFilm(filmId, true);
+        log.info("Фильм с id =" + filmId + " удален");
         filmService.getFilmStorage().deleteFilm(filmId);
     }
 
     @PutMapping("/{filmId}/like/{userId}")
     public void addLikeFilm(@PathVariable int filmId, @PathVariable int userId) {
+        checkFilm(filmId, true);
         filmService.addFilmLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public void deleteLikeFilm(@PathVariable int filmId, @PathVariable int userId) {
+        checkFilm(filmId, true);
         filmService.deleteFilmLike(filmId, userId);
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(
+    public List<Film> getMostPopularFilms(
             @RequestParam(value = "count", defaultValue = "10", required = false) int count) {
         return filmService.getPopularFilms(count);
     }
+
     private void checkFilm(int filmId, boolean isValid) {
         if (isValid) {
-            if (filmService.getFilmStorage().findFilmById(filmId) == null) {
-                throw new NotFoundException("Фильм с айди =" + filmId + " не найден");
+            if (filmService.getFilmStorage().getFilmById(filmId) == null) {
+                throw new NotFoundException("Фильм с id =" + filmId + " не найден");
             }
-        } else if (filmId != 0 && filmService.getFilmStorage().findFilmById(filmId) != null) {
-            throw new AlreadyExistException("Фильм с айди =" + filmId + " уже создан");
+        } else if (filmId != 0 && filmService.getFilmStorage().getFilmById(filmId) != null) {
+            throw new AlreadyExistException("Фильм с id =" + filmId + " уже создан");
         }
     }
 }

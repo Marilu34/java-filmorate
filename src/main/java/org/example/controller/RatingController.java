@@ -12,11 +12,11 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/mpa")
-public class MpaRatingController {
+public class RatingController {
     private final MpaService mpaService;
 
     @Autowired
-    public MpaRatingController(MpaService mpaService) {
+    public RatingController(MpaService mpaService) {
         this.mpaService = mpaService;
     }
 

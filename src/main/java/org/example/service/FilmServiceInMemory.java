@@ -2,7 +2,6 @@ package org.example.service;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceptions.FilmLikeNotFoundException;
 import org.example.exceptions.NotFoundException;
 import org.example.storage.film.storage.FilmStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,7 +26,7 @@ public class FilmServiceInMemory implements FilmService {
         if (filmId <= 0 ||  userId <= 0) {
             throw new NotFoundException(String.format("User with id:%s or film with id:%s not found", userId, filmId));
         }
-        if (!filmStorage.getAllFilms().contains(filmStorage.findFilmById(filmId))) {
+        if (!filmStorage.getAllFilms().contains(filmStorage.getFilmById(filmId))) {
             throw new NotFoundException(String.format("Film with id:%s not found", filmId));
         }
     }
@@ -36,19 +35,19 @@ public class FilmServiceInMemory implements FilmService {
     public void addFilmLike(int filmId, int userId) {
         checkId(filmId, userId);
         log.debug("User {} likes film {}", userId, filmId);
-        filmStorage.findFilmById(filmId).getUsersLike().add(userId);
+        filmStorage.getFilmById(filmId).getUsersLike().add(userId);
     }
 
     @Override
     public void deleteFilmLike(int filmId, int userId) {
         checkId(filmId, userId);
-        if (!filmStorage.findFilmById(filmId).getUsersLike().contains(userId)) {
+        if (!filmStorage.getFilmById(filmId).getUsersLike().contains(userId)) {
             log.debug("user {} deleted like film {}", userId, filmId);
-            throw new FilmLikeNotFoundException(String.format("User with id:%s not like film with id:%s"
+            throw new NotFoundException(String.format("User with id:%s not like film with id:%s"
                     , userId, filmId));
         }
         log.debug("user {} deleted like film {}", userId, filmId);
-        filmStorage.findFilmById(filmId).getUsersLike().remove(userId);
+        filmStorage.getFilmById(filmId).getUsersLike().remove(userId);
     }
 
     @Override

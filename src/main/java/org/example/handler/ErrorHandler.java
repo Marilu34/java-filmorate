@@ -3,12 +3,10 @@ package org.example.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -31,7 +29,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNotValid(final ValidationException e) {
+    public ErrorResponse handleValidationException(final ValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -46,7 +44,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleUserAlreadyFriends(final UserFriendException e) {
+    public ErrorResponse handleAlreadyFriends(final FriendException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -55,17 +53,4 @@ public class ErrorHandler {
     public ErrorResponse handleExist(final AlreadyExistException e) {
         return new ErrorResponse(e.getMessage());
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleFilmLikesAlready(final FilmAlreadyLikeException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFilmLikeNotFound(final FilmLikeNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
 }

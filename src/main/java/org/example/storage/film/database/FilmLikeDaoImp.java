@@ -1,7 +1,6 @@
 package org.example.storage.film.database;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceptions.FilmLikeNotFoundException;
 import org.example.exceptions.NotFoundException;
 import org.example.storage.film.storage.FilmLikeDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class FilmLikeDaoImp implements FilmLikeDao {
         String sql = "select count(*) from FILMS_LIKES where FILM_ID = ?";
         int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
         if (result != 1) {
-            throw new FilmLikeNotFoundException(String.format("film with id:%s not found", id));
+            throw new NotFoundException(String.format("film with id:%s not found", id));
         }
     }
 }

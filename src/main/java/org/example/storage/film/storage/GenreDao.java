@@ -1,13 +1,13 @@
 package org.example.storage.film.storage;
 
 import org.example.model.Film;
-import org.example.model.Genre;
+import org.example.model.Genres;
 import java.util.Collection;
 
 public interface GenreDao {
-    Genre getGenreFromDb(int genreId);
+    Genres getGenreFromDb(int genreId);
 
-    Collection<Genre> getAllGenres();
+    Collection<Genres> getAllGenres();
 
     void addFilmsGenres(Film film);
 

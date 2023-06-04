@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.model.Genre;
+import org.example.model.Genres;
 import org.example.storage.film.storage.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,11 @@ public class GenreService {
         this.genreDao = genreDao;
     }
 
-    public Collection<Genre> getAllGenres() {
+    public Collection<Genres> getAllGenres() {
         return genreDao.getAllGenres();
     }
 
-    public Genre getGenre(int genreId) {
+    public Genres getGenre(int genreId) {
         return genreDao.getGenreFromDb(genreId);
     }
 }

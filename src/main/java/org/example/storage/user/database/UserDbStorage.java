@@ -30,7 +30,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User addUser(User user) {
+    public User createUser(User user) {
         validate(user);
         user.setId(saveUserAndReturnId(user));
         log.debug("user with id {} create", user.getId());
@@ -75,7 +75,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(int userId) {
+    public User getUserById(int userId) {
         if (noExists(userId)) {
             log.debug("User id:{}", userId);
             throw new NotFoundException("Id not found");

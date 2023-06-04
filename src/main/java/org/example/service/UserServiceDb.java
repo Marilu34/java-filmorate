@@ -33,10 +33,10 @@ public class UserServiceDb implements UserService {
     }
 
     @Override
-    public List<User> getFriendList(int userId) {
+    public List<User> getFriends(int userId) {
         List<User> friendList = new ArrayList<>();
         for (Integer friendId : friendsDao.getUserAllFriendsId(userId)) {
-            friendList.add(userStorage.findUserById(friendId));
+            friendList.add(userStorage.getUserById(friendId));
         }
         return friendList;
     }
@@ -47,14 +47,14 @@ public class UserServiceDb implements UserService {
     }
 
     @Override
-    public List<User> getListMutualFriends(int userId, int friendUserId) {
+    public List<User> getCommonFriends(int userId, int friendUserId) {
         checkUserAndFriendId(userId, friendUserId);
-        List<Integer> mutualFriendsId = userStorage.findUserById(userId).getFriendsId().stream()
-                .filter(userStorage.findUserById(friendUserId).getFriendsId()::contains)
+        List<Integer> mutualFriendsId = userStorage.getUserById(userId).getFriendsId().stream()
+                .filter(userStorage.getUserById(friendUserId).getFriendsId()::contains)
                 .collect(toList());
         List<User> mutualFriends = new ArrayList<>();
         for (int mutualId : mutualFriendsId) {
-            mutualFriends.add(userStorage.findUserById(mutualId));
+            mutualFriends.add(userStorage.getUserById(mutualId));
         }
         log.debug("User {} friend {} mutual friends list {}", userId, friendUserId, mutualFriends);
         return mutualFriends;

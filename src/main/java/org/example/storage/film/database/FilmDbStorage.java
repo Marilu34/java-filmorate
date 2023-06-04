@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.Film;
-import org.example.model.Genre;
+import org.example.model.Genres;
 import org.example.storage.film.storage.FilmLikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.example.storage.film.storage.GenreDao;
@@ -39,7 +39,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film addFilm(Film film) {
+    public Film createFilm(Film film) {
         validate(film);
         if (film.getMpa() != null) {
             film.setMpa(mpaDao.getMpaFromDb(film.getMpa().getId()));
@@ -78,7 +78,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getRate(), film.getMpa().getId(), film.getId());
        /* пришлось так сделать чтоб пройти тест (Friend film genres update with duplicate) postman
         т.к. он чувствителен к порядку выдачи жанров.*/
-        return findFilmById(film.getId());
+        return getFilmById(film.getId());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(int filmId) {
+    public Film getFilmById(int filmId) {
         if (noExists(filmId)) {
             log.debug("getting film {} with incorrect id", filmId);
             throw new NotFoundException(String.format("film with id:%s not found", filmId));
@@ -130,8 +130,8 @@ public class FilmDbStorage implements FilmStorage {
                 .usersLike(filmLikeDao.getUserLikes( resultSet.getInt("film_id"))).build();
     }
 
-    private Set<Genre> getFilmGenres(int rowNum) {
-        Set<Genre> genres = new HashSet<>();
+    private Set<Genres> getFilmGenres(int rowNum) {
+        Set<Genres> genres = new HashSet<>();
         String sql = "select GENRE_ID from FILMS_GENRES where FILM_ID = ?";
         List<Integer> listGenreId = jdbcTemplate.queryForList(sql, Integer.class, rowNum);
         for (int genreId : listGenreId) {

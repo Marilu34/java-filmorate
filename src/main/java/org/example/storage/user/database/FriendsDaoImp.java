@@ -2,7 +2,7 @@ package org.example.storage.user.database;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
-import org.example.exceptions.UserFriendException;
+import org.example.exceptions.FriendException;
 import org.example.storage.user.storage.FriendsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,7 +49,7 @@ public class FriendsDaoImp implements FriendsDao {
     private void checkEqualityIdAndExists(int userId, int friendUserId) {
         if (userId == friendUserId) {
             log.debug("user {} friend id {}", userId, friendUserId);
-            throw new UserFriendException(String.format("user id %s = friends id %s", userId, friendUserId));
+            throw new FriendException(String.format("user id %s = friends id %s", userId, friendUserId));
         }
         if (noExists(userId) || noExists(friendUserId)) {
             log.debug("User id {} friend id {}", userId, friendUserId);

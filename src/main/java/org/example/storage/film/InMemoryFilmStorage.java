@@ -26,7 +26,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film addFilm(Film film) {
+    public Film createFilm(Film film) {
         if (filmMap.containsKey(film.getId())) {
             log.debug("Film id:{}", film.getId());
             throw new AlreadyExistException("Id already use");
@@ -70,7 +70,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(int filmId) {
+    public Film getFilmById(int filmId) {
         if (!filmMap.containsKey(filmId)) {
             throw new NotFoundException(String.format("film with id:%s not found", filmId));
         }

@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface UserStorage {
 
-    User addUser(User user);
+    User createUser(User user);
 
     void deleteUser(int userId);
 
@@ -16,5 +16,5 @@ public interface UserStorage {
 
     void deleteAllUsers();
 
-    User findUserById(int id);
+    User getUserById(int id);
 }

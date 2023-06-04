@@ -21,7 +21,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User addUser(User user) {
+    public User createUser(User user) {
         if (userMap.containsKey(user.getId())) {
             log.debug("User with id:{}, already exist", user.getId());
             throw new NotFoundException("Id already use");
@@ -69,7 +69,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(int id) {
+    public User getUserById(int id) {
         if (!userMap.containsKey(id)) {
             throw new NotFoundException("User not found");
         }

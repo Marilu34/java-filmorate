@@ -3,7 +3,7 @@ package org.example.storage.film.database;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.model.Film;
-import org.example.model.Genre;
+import org.example.model.Genres;
 import org.example.storage.film.storage.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +23,7 @@ public class GenreDaoImp implements GenreDao {
     }
 
     @Override
-    public Genre getGenreFromDb(int genreId) {
+    public Genres getGenreFromDb(int genreId) {
         if (!exist(genreId)) {
             log.debug("getting genre with incorrect id {}", genreId);
             throw new NotFoundException(String.format("Genre with id:%s not found", genreId));
@@ -33,13 +33,13 @@ public class GenreDaoImp implements GenreDao {
     }
 
     @Override
-    public Collection<Genre> getAllGenres() {
+    public Collection<Genres> getAllGenres() {
         String sql = "select * from genres";
         return jdbcTemplate.query(sql, this::mapRowToGenre);
     }
 
-    private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
-        return Genre.builder().id(resultSet.getInt("genre_id")).name(resultSet.getString("genre"))
+    private Genres mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
+        return Genres.builder().id(resultSet.getInt("genre_id")).name(resultSet.getString("genre"))
                 .build();
     }
 
@@ -47,7 +47,7 @@ public class GenreDaoImp implements GenreDao {
     public void addFilmsGenres(Film film) {
         String sql = "insert into films_genres (film_id, genre_id) " +
                 "values (?, ?)";
-        for (Genre genre : film.getGenres()) {
+        for (Genres genre : film.getGenres()) {
             jdbcTemplate.update(sql, film.getId(), genre.getId());
         }
     }

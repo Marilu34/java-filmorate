@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface FilmStorage {
 
-    Film addFilm(Film film);
+    Film createFilm(Film film);
 
     void deleteFilm(int filmId);
 
@@ -16,5 +16,5 @@ public interface FilmStorage {
 
     void deleteAllFilms();
 
-    Film findFilmById(int filmId);
+    Film getFilmById(int filmId);
 }
