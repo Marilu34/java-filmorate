@@ -13,7 +13,7 @@ import java.util.Map;
 @Slf4j
 @Component("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
-    private final Map<Long, User> userMap = new HashMap<>();
+    private final Map<Integer, User> userMap = new HashMap<>();
     private int id = 1;
 
     private int setId() {
@@ -35,7 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(long userId) {
+    public void deleteUser(int userId) {
         if (!userMap.containsKey(userId)) {
             log.debug("User id:{}", userId);
             throw new NotFoundException("Id not found");
@@ -69,7 +69,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(long id) {
+    public User findUserById(int id) {
         if (!userMap.containsKey(id)) {
             throw new NotFoundException("User not found");
         }

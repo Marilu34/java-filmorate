@@ -3,11 +3,11 @@ package org.example.storage.user.storage;
 import java.util.List;
 
 public interface FriendsDao {
-    List<Long> getFriends(long userId);
+    List<Integer> getFriends(int userId);
 
-    void addFriend(long userId, long friendUserId);
+    void addFriend(int userId, int friendUserId);
 
-    void deleteFriend(long userId, long friendUserId);
+    void deleteFriend(int userId, int friendUserId);
 
-    List<Long> getUserAllFriendsId(long userId);
+    List<Integer> getUserAllFriendsId(int userId);
 }

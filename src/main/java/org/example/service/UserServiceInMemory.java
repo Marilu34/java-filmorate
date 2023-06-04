@@ -29,7 +29,7 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public void addFriend(long userId, long friendUserId) {
+    public void addFriend(int userId, int friendUserId) {
         checkUserAndFriendId(userId, friendUserId);
         if (userStorage.findUserById(userId).getFriendsId().contains(userStorage.findUserById(friendUserId).getId())) {
             log.debug("User {} add friend user {} , user friend list {}", userId, friendUserId,
@@ -49,13 +49,13 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public List<User> getFriendList(long userId) {
+    public List<User> getFriendList(int  userId) {
         if (userId <= 0) {
             log.debug("User {}", userId);
             throw new NotFoundException(String.format("user with id:%s not found", userId));
         }
         List<User> friendList = new ArrayList<>();
-        for (long friendId : userStorage.findUserById(userId).getFriendsId()) {
+        for (int friendId : userStorage.findUserById(userId).getFriendsId()) {
             friendList.add(userStorage.findUserById(friendId));
         }
         log.debug("User {} users friend list {}", userId, friendList);
@@ -63,7 +63,7 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public void deleteFriend(long userId, long friendUserId) {
+    public void deleteFriend(int userId, int friendUserId) {
         checkUserAndFriendId(userId, friendUserId);
         if (!userStorage.findUserById(userId).getFriendsId().contains(userStorage.findUserById(friendUserId).getId())) {
             log.debug("User {} deleted friend {} from friend list {}", userId, friendUserId,
@@ -82,21 +82,21 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public List<User> getListMutualFriends(long userId, long friendUserId) {
+    public List<User> getListMutualFriends(int userId, int friendUserId) {
         checkUserAndFriendId(userId, friendUserId);
-        List<Long> mutualFriendsId = userStorage.findUserById(userId).getFriendsId().stream()
+        List<Integer> mutualFriendsId = userStorage.findUserById(userId).getFriendsId().stream()
                 .filter(userStorage.findUserById(friendUserId).getFriendsId()::contains)
                 .collect(toList());
         List<User> mutualFriends = new ArrayList<>();
-        for (long mutualId : mutualFriendsId) {
+        for (int mutualId : mutualFriendsId) {
             mutualFriends.add(userStorage.findUserById(mutualId));
         }
         log.debug("User {} friend {} mutual friends list {}", userId, friendUserId, mutualFriends);
         return mutualFriends;
     }
 
-    private void checkUserAndFriendId(Long userId, Long friendId) {
-        if (userId == null || friendId == null || userId <= 0 || friendId <= 0) {
+    private void checkUserAndFriendId(int userId, int friendId) {
+        if ( userId <= 0 || friendId <= 0) {
             log.debug("Check user {} check friend {}", userId, friendId);
             throw new NotFoundException(String.format("User with id:%s or user friend with id:%s not found",
                     userId, friendId));

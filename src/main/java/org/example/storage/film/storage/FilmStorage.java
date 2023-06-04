@@ -8,7 +8,7 @@ public interface FilmStorage {
 
     Film addFilm(Film film);
 
-    void deleteFilm(long flmId);
+    void deleteFilm(int filmId);
 
     Film updateFilm(Film film);
 
@@ -16,5 +16,5 @@ public interface FilmStorage {
 
     void deleteAllFilms();
 
-    Film findFilmById(long filmId);
+    Film findFilmById(int filmId);
 }

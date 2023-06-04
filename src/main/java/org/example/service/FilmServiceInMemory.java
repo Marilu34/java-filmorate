@@ -22,9 +22,9 @@ public class FilmServiceInMemory implements FilmService {
         this.filmStorage = filmStorage;
     }
 
-    private void checkId(Long filmId, Long userId) {
+    private void checkId(int filmId, int userId) {
         log.debug("check user {} check film {}", userId, filmId);
-        if (filmId == null || filmId <= 0 || userId == null || userId <= 0) {
+        if (filmId <= 0 ||  userId <= 0) {
             throw new NotFoundException(String.format("User with id:%s or film with id:%s not found", userId, filmId));
         }
         if (!filmStorage.getAllFilms().contains(filmStorage.findFilmById(filmId))) {
@@ -33,14 +33,14 @@ public class FilmServiceInMemory implements FilmService {
     }
 
     @Override
-    public void addFilmLike(long filmId, long userId) {
+    public void addFilmLike(int filmId, int userId) {
         checkId(filmId, userId);
         log.debug("User {} likes film {}", userId, filmId);
         filmStorage.findFilmById(filmId).getUsersLike().add(userId);
     }
 
     @Override
-    public void deleteFilmLike(long filmId, long userId) {
+    public void deleteFilmLike(int filmId, int userId) {
         checkId(filmId, userId);
         if (!filmStorage.findFilmById(filmId).getUsersLike().contains(userId)) {
             log.debug("user {} deleted like film {}", userId, filmId);

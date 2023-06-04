@@ -3,9 +3,9 @@ package org.example.storage.film.storage;
 import java.util.Set;
 
 public interface FilmLikeDao {
-    Set<Long> getUserLikes(long filmId);
+    Set<Integer> getUserLikes(int filmId);
 
-    void addLike(long filmId, long userId);
+    void addLike(int filmId, int userId);
 
-    void deleteLike(long filmId, long userId);
+    void deleteLike(int filmId, int userId);
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -52,7 +53,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(long filmId) {
+    public void deleteFilm(int filmId) {
         if (noExists(filmId)) {
             log.debug("try delete film {} with incorrect id", filmId);
             throw new NotFoundException(String.format("film with id:%s not found", filmId));
@@ -71,7 +72,7 @@ public class FilmDbStorage implements FilmStorage {
             genreDao.updateFilmsGenres(film);
         }
         String sql = "update FILMS set " +
-                "FILM_NAME = ?, FILM_DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, FILM_RATE = ?, MPA_ID = ? " +
+                "FILM_NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, FILM_RATE = ?, MPA_ID = ? " +
                 "where FILM_ID = ?";
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getRate(), film.getMpa().getId(), film.getId());
@@ -93,7 +94,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(long filmId) {
+    public Film findFilmById(int filmId) {
         if (noExists(filmId)) {
             log.debug("getting film {} with incorrect id", filmId);
             throw new NotFoundException(String.format("film with id:%s not found", filmId));
@@ -102,10 +103,10 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.queryForObject(sql, this::mapRowToFilm, filmId);
     }
 
-    private long saveFilmAndReturnId(Film film) {
+    private int saveFilmAndReturnId(Film film) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films").usingGeneratedKeyColumns("film_id");
-        return simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue();
+        return simpleJdbcInsert.executeAndReturnKey(film.toMap()).intValue();
     }
 
 
@@ -118,15 +119,15 @@ public class FilmDbStorage implements FilmStorage {
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
-                .id(resultSet.getLong("film_id"))
+                .id(resultSet.getInt("film_id"))
                 .name(resultSet.getString("film_name"))
-                .description(resultSet.getString("film_description"))
+                .description(resultSet.getString("description"))
                 .releaseDate(LocalDate.parse(resultSet.getString("release_date")))
                 .duration(resultSet.getInt("duration"))
                 .mpa(mpaDao.getMpaFromDb(resultSet.getInt("mpa_id")))
                 .rate(resultSet.getInt("film_rate"))
-                .genres(getFilmGenres((int) resultSet.getLong("film_id")))
-                .usersLike(filmLikeDao.getUserLikes((int) resultSet.getLong("film_id"))).build();
+                .genres(getFilmGenres(resultSet.getInt("film_id")))
+                .usersLike(filmLikeDao.getUserLikes( resultSet.getInt("film_id"))).build();
     }
 
     private Set<Genre> getFilmGenres(int rowNum) {

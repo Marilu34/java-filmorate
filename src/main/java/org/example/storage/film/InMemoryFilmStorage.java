@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 @Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Long, Film> filmMap = new HashMap<>();
+    private final Map<Integer, Film> filmMap = new HashMap<>();
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
     private int id = 1;
 
@@ -40,7 +40,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(long filmId) {
+    public void deleteFilm(int filmId) {
         if (!filmMap.containsKey(filmId)) {
             throw new NotFoundException(String.format("Film with id:%s not found", filmId));
         }
@@ -70,7 +70,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findFilmById(long filmId) {
+    public Film findFilmById(int filmId) {
         if (!filmMap.containsKey(filmId)) {
             throw new NotFoundException(String.format("film with id:%s not found", filmId));
         }

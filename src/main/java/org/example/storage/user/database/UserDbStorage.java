@@ -38,7 +38,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(long userId) {
+    public void deleteUser(int userId) {
         if (noExists(userId)) {
             log.debug("User id:{}", userId);
             throw new NotFoundException("Id not found");
@@ -75,7 +75,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(long userId) {
+    public User findUserById(int userId) {
         if (noExists(userId)) {
             log.debug("User id:{}", userId);
             throw new NotFoundException("Id not found");
@@ -92,10 +92,10 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    private long saveUserAndReturnId(User user) {
+    private int saveUserAndReturnId(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users").usingGeneratedKeyColumns("user_id");
-        return simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue();
+        return simpleJdbcInsert.executeAndReturnKey(user.toMap()).intValue();
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
@@ -108,7 +108,7 @@ public class UserDbStorage implements UserStorage {
                 .friendsId(new HashSet<>(friendsDao.getFriends(resultSet.getInt("user_id")))).build();
     }
 
-    private boolean noExists(long id) {
+    private boolean noExists(int id) {
         String sql = "select count(*) from USERS where USER_ID = ?";
         int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return result == 0;

@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User {
-    private long id;
+    private int id;
     @Email(message = "email not valid")
     private String email;
     @NotBlank(message = "login not valid")
@@ -26,7 +26,7 @@ public class User {
     @Past(message = "birthday in future")
     @NonNull
     private LocalDate birthday;
-    private Set<Long> friendsId;
+    private Set<Integer> friendsId;
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

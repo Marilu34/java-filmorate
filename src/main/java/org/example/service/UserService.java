@@ -6,13 +6,13 @@ import org.example.storage.user.storage.UserStorage;
 import java.util.List;
 
 public interface UserService {
-    void addFriend(long userId, long friendUserId);
+    void addFriend(int userId, int friendUserId);
 
-    List<User> getFriendList(long userId);
+    List<User> getFriendList(int userId);
 
-    void deleteFriend(long userId, long friendUserId);
+    void deleteFriend(int userId,int friendUserId);
 
-    List<User> getListMutualFriends(long userId, long friendUserId);
+    List<User> getListMutualFriends(int userId, int friendUserId);
 
     UserStorage getUserStorage();
 }

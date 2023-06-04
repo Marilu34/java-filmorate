@@ -6,9 +6,9 @@ import org.example.storage.film.storage.FilmStorage;
 import java.util.List;
 
 public interface FilmService {
-    void addFilmLike(long filmId, long userId);
+    void addFilmLike(int filmId, int userId);
 
-    void deleteFilmLike(long filmId, long userId);
+    void deleteFilmLike(int filmId, int userId);
 
     List<Film> getPopularFilms(int count);
 

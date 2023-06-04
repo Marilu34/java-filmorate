@@ -20,17 +20,17 @@ public class FriendsDaoImp implements FriendsDao {
     }
 
     @Override
-    public List<Long> getFriends(long userId) {
+    public List<Integer> getFriends(int userId) {
         if (noExists(userId)) {
             log.debug("user id {}", userId);
             throw new NotFoundException(String.format("User with id %s not found", userId));
         }
         String sql = "select FRIEND_ID from FRIENDS where USER_ID = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, userId);
+        return jdbcTemplate.queryForList(sql, Integer.class, userId);
     }
 
     @Override
-    public void addFriend(long userId, long friendUserId) {
+    public void addFriend(int userId, int friendUserId) {
         checkEqualityIdAndExists(userId, friendUserId);
         String sql = "insert into FRIENDS (USER_ID, FRIEND_ID, FRIEND_STATUS) VALUES (? ,? , false)";
         jdbcTemplate.update(sql, userId, friendUserId);
@@ -39,14 +39,14 @@ public class FriendsDaoImp implements FriendsDao {
     }
 
     @Override
-    public void deleteFriend(long userId, long friendUserId) {
+    public void deleteFriend(int userId, int friendUserId) {
         checkEqualityIdAndExists(userId, friendUserId);
         String sql = "delete from FRIENDS where USER_ID = ? and FRIEND_ID = ?";
         jdbcTemplate.update(sql, userId, friendUserId);
         log.debug("user {} delete friend {}", userId, friendUserId);
     }
 
-    private void checkEqualityIdAndExists(long userId, long friendUserId) {
+    private void checkEqualityIdAndExists(int userId, int friendUserId) {
         if (userId == friendUserId) {
             log.debug("user {} friend id {}", userId, friendUserId);
             throw new UserFriendException(String.format("user id %s = friends id %s", userId, friendUserId));
@@ -68,16 +68,16 @@ public class FriendsDaoImp implements FriendsDao {
     }
 
     @Override
-    public List<Long> getUserAllFriendsId(long userId) {
+    public List<Integer> getUserAllFriendsId(int userId) {
         if (noExists(userId)) {
             log.debug("user id {}", userId);
             throw new NotFoundException(String.format("User with id %s not found", userId));
         }
         String sql = "select FRIEND_ID from FRIENDS where USER_ID = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, userId);
+        return jdbcTemplate.queryForList(sql, Integer.class, userId);
     }
 
-    private boolean noExists(long id) {
+    private boolean noExists(int id) {
         String sql = "select count(*) from USERS where USER_ID = ?";
         int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return result == 0;
