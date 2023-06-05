@@ -14,11 +14,11 @@ import java.util.Collection;
 
 @Component
 @Slf4j
-public class GenreDaoImp implements GenreDao {
+public class GenreDaoDb implements GenreDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public GenreDaoImp(JdbcTemplate jdbcTemplate) {
+    public GenreDaoDb(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

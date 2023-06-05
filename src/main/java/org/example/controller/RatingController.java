@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.MPA.Mpa;
+import org.example.model.Mpa;
 import org.example.service.MpaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

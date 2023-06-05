@@ -1,7 +1,6 @@
 package org.example.model;
 
 import lombok.*;
-import org.example.MPA.Mpa;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;

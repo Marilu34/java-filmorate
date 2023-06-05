@@ -1,7 +1,7 @@
 package org.example.storage.film.database;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.MPA.Mpa;
+import org.example.model.Mpa;
 import org.example.exceptions.NotFoundException;
 import org.example.storage.film.storage.MpaDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import java.util.Collection;
 
 @Component
 @Slf4j
-public class MpaDaoImp implements MpaDao {
+public class MpaDaoDb implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public MpaDaoImp(JdbcTemplate jdbcTemplate) {
+    public MpaDaoDb(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

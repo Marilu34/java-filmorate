@@ -8,13 +8,14 @@ public interface UserStorage {
 
     User createUser(User user);
 
-    void deleteUser(int userId);
-
-    User updateUser(User user);
+    User getUserById(int id);
 
     Collection<User> getAllUsers();
 
+    User updateUser(User user);
+
     void deleteAllUsers();
 
-    User getUserById(int id);
+    void deleteUser(int userId);
+
 }

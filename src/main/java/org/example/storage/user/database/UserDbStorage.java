@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.model.User;
-import org.example.storage.user.storage.FriendsDao;
+import org.example.storage.user.storage.FriendDao;
 import org.example.storage.user.storage.UserStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,10 +21,10 @@ import java.util.HashSet;
 @Getter
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final FriendsDao friendsDao;
+    private final FriendDao friendsDao;
 
     @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate, FriendsDao friendsDao) {
+    public UserDbStorage(JdbcTemplate jdbcTemplate, FriendDao friendsDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.friendsDao = friendsDao;
     }
@@ -113,4 +113,5 @@ public class UserDbStorage implements UserStorage {
         int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return result == 0;
     }
+
 }

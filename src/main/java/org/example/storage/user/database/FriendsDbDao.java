@@ -3,7 +3,7 @@ package org.example.storage.user.database;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.FriendException;
-import org.example.storage.user.storage.FriendsDao;
+import org.example.storage.user.storage.FriendDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -11,11 +11,11 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class FriendsDaoImp implements FriendsDao {
+public class FriendsDbDao implements FriendDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FriendsDaoImp(JdbcTemplate jdbcTemplate) {
+    public FriendsDbDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

@@ -6,7 +6,7 @@ import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.Film;
 import org.example.model.Genres;
-import org.example.storage.film.storage.FilmLikeDao;
+import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.example.storage.film.storage.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,14 @@ import java.util.*;
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final MpaDaoImp mpaDao;
+    private final MpaDaoDb mpaDao;
     private final GenreDao genreDao;
-    private final FilmLikeDao filmLikeDao;
+    private final LikeDao filmLikeDao;
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoImp mpaDao,
-                         GenreDaoImp genreDaoImp, FilmLikeDaoImp filmLikeDaoImp) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoDb mpaDao,
+                         GenreDaoDb genreDaoImp, LikeDaoDb filmLikeDaoImp) {
         this.jdbcTemplate = jdbcTemplate;
         this.mpaDao = mpaDao;
         this.genreDao = genreDaoImp;

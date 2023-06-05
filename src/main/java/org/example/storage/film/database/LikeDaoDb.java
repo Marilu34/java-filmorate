@@ -2,7 +2,7 @@ package org.example.storage.film.database;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
-import org.example.storage.film.storage.FilmLikeDao;
+import org.example.storage.film.storage.LikeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,11 +12,11 @@ import java.util.Set;
 
 @Component
 @Slf4j
-public class FilmLikeDaoImp implements FilmLikeDao {
+public class LikeDaoDb implements LikeDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FilmLikeDaoImp(JdbcTemplate jdbcTemplate) {
+    public LikeDaoDb(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

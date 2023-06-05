@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.MPA.Mpa;
+import org.example.model.Mpa;
 import org.example.storage.film.storage.MpaDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

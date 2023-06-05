@@ -2,8 +2,8 @@ package org.example.service;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
-import org.example.storage.film.database.FilmLikeDaoImp;
-import org.example.storage.film.storage.FilmLikeDao;
+import org.example.storage.film.database.LikeDaoDb;
+import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,10 +18,10 @@ import org.example.model.Film;
 @Slf4j
 public class FilmServiceDb implements FilmService {
     private final FilmStorage filmStorage;
-    private final FilmLikeDao filmLikeDao;
+    private final LikeDao filmLikeDao;
 
     @Autowired
-    public FilmServiceDb(@Qualifier("dbFilmStorage") FilmStorage filmStorage, FilmLikeDaoImp filmLikeDaoImp) {
+    public FilmServiceDb(@Qualifier("dbFilmStorage") FilmStorage filmStorage, LikeDaoDb filmLikeDaoImp) {
         this.filmStorage = filmStorage;
         this.filmLikeDao = filmLikeDaoImp;
     }
