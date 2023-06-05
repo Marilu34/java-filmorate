@@ -1,3 +1,4 @@
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.FilmController;
 import org.example.exceptions.NotFoundException;
@@ -5,15 +6,16 @@ import org.example.exceptions.ValidationException;
 import org.example.model.Film;
 import org.example.model.Mpa;
 import org.example.model.User;
-import org.example.storage.film.database.FilmDbStorage;
+import org.example.storage.film.Db.FilmDbStorage;
 import org.example.storage.film.storage.GenreDao;
 import org.example.storage.film.storage.MpaDao;
-import org.example.storage.user.database.UserDbStorage;
+import org.example.storage.user.Db.UserDbStorage;
 import org.example.storage.user.storage.FriendDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -26,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmorateApplicationTests {
+
+
+
     private final UserDbStorage userStorage;
     private final FriendDao friendsDao;
     private final MpaDao mpaDao;

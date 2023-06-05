@@ -17,7 +17,7 @@ public class MpaService {
         this.mpaDao = mpaDao;
     }
 
-    public Mpa getMpaRating(int mpaId) {
+    public Mpa getRatingById(int mpaId) {
         return mpaDao.getMpaFromDb(mpaId);
     }
 

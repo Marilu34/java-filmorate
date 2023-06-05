@@ -1,4 +1,4 @@
-package org.example.storage.film.database;
+package org.example.storage.film.Db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Mpa;

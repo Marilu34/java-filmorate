@@ -1,4 +1,4 @@
-package org.example.storage.film.database;
+package org.example.storage.film.Db;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +10,11 @@ import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.example.storage.film.storage.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,10 +30,8 @@ public class FilmDbStorage implements FilmStorage {
     private final GenreDao genreDao;
     private final LikeDao filmLikeDao;
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
-
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoDb mpaDao,
-                         GenreDaoDb genreDaoImp, LikeDaoDb filmLikeDaoImp) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoDb mpaDao,GenreDaoDb genreDaoImp, LikeDaoDb filmLikeDaoImp) {
         this.jdbcTemplate = jdbcTemplate;
         this.mpaDao = mpaDao;
         this.genreDao = genreDaoImp;
@@ -48,15 +48,15 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getGenres() != null) {
             genreDao.addFilmsGenres(film);
         }
-        log.debug("add film {}", film.getId());
+        log.info("Фильм создан: {}", film);
         return film;
     }
 
     @Override
     public void deleteFilm(int filmId) {
         if (noExists(filmId)) {
-            log.debug("try delete film {} with incorrect id", filmId);
-            throw new NotFoundException(String.format("film with id:%s not found", filmId));
+            log.debug("Ошибка при удалении фильма {}", filmId);
+            throw new NotFoundException("Не обнаружен Фильм с id: {}" + filmId);
         }
         String sql = "DELETE FROM FILMS WHERE FILM_ID = ?";
         jdbcTemplate.update(sql, filmId);
@@ -65,8 +65,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         if (noExists(film.getId())) {
-            log.debug("try update film {} with incorrect id", film.getId());
-            throw new NotFoundException(String.format("film with id:%s not found", film.getId()));
+            log.debug("Ошибка при обновлении фильма {}", film.getId());
+            throw new NotFoundException("Не обнаружен Фильм с id: {}"+ film.getId());
         }
         if (film.getGenres() != null) {
             genreDao.updateFilmsGenres(film);
@@ -76,10 +76,9 @@ public class FilmDbStorage implements FilmStorage {
                 "where FILM_ID = ?";
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getRate(), film.getMpa().getId(), film.getId());
-       /* пришлось так сделать чтоб пройти тест (Friend film genres update with duplicate) postman
-        т.к. он чувствителен к порядку выдачи жанров.*/
         return getFilmById(film.getId());
     }
+
 
     @Override
     public Collection<Film> getAllFilms() {

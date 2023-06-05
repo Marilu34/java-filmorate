@@ -19,7 +19,7 @@ public class GenreService {
         return genreDao.getAllGenres();
     }
 
-    public Genres getGenre(int genreId) {
+    public Genres getGenreById(int genreId) {
         return genreDao.getGenreFromDb(genreId);
     }
 }

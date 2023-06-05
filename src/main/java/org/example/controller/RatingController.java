@@ -21,12 +21,12 @@ public class RatingController {
     }
 
     @GetMapping
-    public Collection<Mpa> getAllMpaRatings() {
+    public Collection<Mpa> getAllRatings() {
         return mpaService.getAllMpaRatings();
     }
 
     @GetMapping("/{mpaId}")
-    public Mpa getMpaRating(@PathVariable("mpaId") int mpaId) {
-        return mpaService.getMpaRating(mpaId);
+    public Mpa getRatingById(@PathVariable("mpaId") int mpaId) {
+        return mpaService.getRatingById(mpaId);
     }
 }

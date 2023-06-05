@@ -1,4 +1,4 @@
-package org.example.storage.user.database;
+package org.example.storage.user.Db;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
