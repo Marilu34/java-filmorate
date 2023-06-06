@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.example.model.Film;
 
-@Service("DbFilmService")
+@Service
 @Getter
 @Slf4j
 public class FilmService {
@@ -21,7 +21,7 @@ public class FilmService {
     private final LikeDao filmLikeDao;
 
     @Autowired
-    public FilmService(@Qualifier("dbFilmStorage") FilmStorage filmStorage, LikeDaoDb filmLikeDaoImp) {
+    public FilmService(FilmStorage filmStorage, LikeDaoDb filmLikeDaoImp) {
         this.filmStorage = filmStorage;
         this.filmLikeDao = filmLikeDaoImp;
     }

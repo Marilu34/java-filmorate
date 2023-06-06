@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 @Slf4j
-@Component("dbUserStorage")
+@Component
 @Getter
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
