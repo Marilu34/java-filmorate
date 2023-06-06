@@ -10,11 +10,10 @@ import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.example.storage.film.storage.GenreDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.validation.annotation.Validated;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +43,7 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getMpa() != null) {
             film.setMpa(mpaDao.getMpaFromDb(film.getMpa().getId()));
         }
-        film.setId((saveFilmAndReturnId(film)));
+        film.setId((makeFilmInDb(film)));
         if (film.getGenres() != null) {
             genreDao.addFilmsGenres(film);
         }
@@ -83,7 +82,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         String sql = "select * from films;";
-        return jdbcTemplate.query(sql, this::mapRowToFilm);
+        return jdbcTemplate.query(sql, this::makeFilmDb);
     }
 
     @Override
@@ -95,28 +94,36 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilmById(int filmId) {
         if (noExists(filmId)) {
-            log.debug("getting film {} with incorrect id", filmId);
-            throw new NotFoundException(String.format("film with id:%s not found", filmId));
+            log.debug("Ошибка при получении фильма {}", filmId);
+            throw new NotFoundException(String.format("Не обнаружен Фильм с id: {}" +  filmId));
         }
         String sql = "select * from films where film_id = ?";
-        return jdbcTemplate.queryForObject(sql, this::mapRowToFilm, filmId);
+        return jdbcTemplate.queryForObject(sql, this::makeFilmDb, filmId);
     }
 
-    private int saveFilmAndReturnId(Film film) {
+    private int makeFilmInDb(Film film) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films").usingGeneratedKeyColumns("film_id");
         return simpleJdbcInsert.executeAndReturnKey(film.toMap()).intValue();
     }
 
 
-    private void validate(Film film) {
+    private void validate(@Validated Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_RELEASE)) {
-            log.debug("film not valid release date:{}", film.getReleaseDate());
-            throw new ValidationException("Release date not valid");
+            throw new ValidationException("Дата выпуска Film недействительна");
+        }
+        if (film.getName().isBlank() || film.getName() == null) {
+            throw new ValidationException("Имя Film не может быть пустым");
+        }
+        if (film.getDuration() <= 0 || film.getDuration() > 200) {
+            throw new ValidationException("Продолжительность Film не может быть отрицательным");
+        }
+        if (film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length() > 200) {
+            throw new ValidationException("Описание Film не может быть больше 200 символов");
         }
     }
 
-    private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
+    private Film makeFilmDb(ResultSet resultSet, int rowNum) throws SQLException {
         return Film.builder()
                 .id(resultSet.getInt("film_id"))
                 .name(resultSet.getString("film_name"))
@@ -125,11 +132,11 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(resultSet.getInt("duration"))
                 .mpa(mpaDao.getMpaFromDb(resultSet.getInt("mpa_id")))
                 .rate(resultSet.getInt("film_rate"))
-                .genres(getFilmGenres(resultSet.getInt("film_id")))
+                .genres(getGenres(resultSet.getInt("film_id")))
                 .usersLike(filmLikeDao.getUserLikes( resultSet.getInt("film_id"))).build();
     }
 
-    private Set<Genres> getFilmGenres(int rowNum) {
+    private Set<Genres> getGenres(int rowNum) {
         Set<Genres> genres = new HashSet<>();
         String sql = "select GENRE_ID from FILMS_GENRES where FILM_ID = ?";
         List<Integer> listGenreId = jdbcTemplate.queryForList(sql, Integer.class, rowNum);

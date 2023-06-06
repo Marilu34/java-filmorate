@@ -7,6 +7,7 @@ import org.example.storage.film.storage.MpaDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -21,32 +22,32 @@ public class MpaDaoDb implements MpaDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public Collection<Mpa> getAllMpa() {
-        String sql = "select * from MPA_RATINGS";
-        return jdbcTemplate.query(sql, this::mapRowToMpa);
+    private boolean noExists(int mpaId) {
+        String sql = "select count (*) from mpa_ratings where RATING_ID = ?";
+        int result = jdbcTemplate.queryForObject(sql, Integer.class, mpaId);
+        return result == 0;
     }
 
     @Override
     public Mpa getMpaFromDb(int mpaId) {
         if (noExists(mpaId)) {
-            log.debug("getting mpa rating with incorrect id {}", mpaId);
-            throw new NotFoundException(String.format("MPA rating with id:%s not found", mpaId));
+            log.debug("Ошибка при получении MPA {}", mpaId);
+            throw new NotFoundException(String.format("Не обнаружен MPA с id: {}", mpaId));
         }
         String sql = "select rating_id, rating from mpa_ratings where rating_id = ?";
-        return jdbcTemplate.queryForObject(sql, this::mapRowToMpa, mpaId);
+        return jdbcTemplate.queryForObject(sql, this::makeMpa, mpaId);
     }
 
-    private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
+    @Override
+    public Collection<Mpa> getAllMpa() {
+        String sql = "select * from MPA_RATINGS";
+        return jdbcTemplate.query(sql, this::makeMpa);
+    }
+
+    private Mpa makeMpa(ResultSet resultSet, int rowNum) throws SQLException {
         return Mpa.builder().
                 id(resultSet.getInt("rating_id")).
                 name(resultSet.getString("rating"))
                 .build();
-    }
-
-    private boolean noExists(int mpaId) {
-        String sql = "select count (*) from mpa_ratings where RATING_ID = ?";
-        int result = jdbcTemplate.queryForObject(sql, Integer.class, mpaId);
-        return result == 0;
     }
 }

@@ -1,4 +1,3 @@
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.example.controller.FilmController;
 import org.example.exceptions.NotFoundException;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -24,12 +22,10 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(classes = FilmorateApplicationTests.class)
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmorateApplicationTests {
-
-
 
     private final UserDbStorage userStorage;
     private final FriendDao friendsDao;
@@ -89,7 +85,7 @@ public class FilmorateApplicationTests {
 
     @Test
     public void testGetAllFriendsIdWithIncorrectId() {
-        assertThrows(NotFoundException.class, () -> friendsDao.getUserAllFriendsId(123));
+        assertThrows(NotFoundException.class, () -> friendsDao.getFriendsIdList(123));
     }
 
     @Test
@@ -154,6 +150,7 @@ public class FilmorateApplicationTests {
         filmDbStorage.deleteFilm(2);
         assertTrue(filmDbStorage.getAllFilms().isEmpty());
     }
+
     @Test
     public void createFilm() throws ValidationException {
         filmController.createFilm(film);

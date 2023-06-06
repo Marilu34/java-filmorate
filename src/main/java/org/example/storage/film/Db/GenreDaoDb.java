@@ -25,8 +25,8 @@ public class GenreDaoDb implements GenreDao {
     @Override
     public Genres getGenreFromDb(int genreId) {
         if (!exist(genreId)) {
-            log.debug("getting genre with incorrect id {}", genreId);
-            throw new NotFoundException(String.format("Genre with id:%s not found", genreId));
+            log.debug("Ошибка при получении жанра {}", genreId);
+            throw new NotFoundException(String.format("Не обнаружен жанр с id: {}" + genreId));
         }
         String sql = "select genre_id, genre from genres where genre_id = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToGenre, genreId);
@@ -67,6 +67,5 @@ public class GenreDaoDb implements GenreDao {
     private void deleteFromFilmsGenres(Film film) {
         String sql = "delete from FILMS_GENRES where FILM_ID = ?";
         jdbcTemplate.update(sql, film.getId());
-
     }
 }

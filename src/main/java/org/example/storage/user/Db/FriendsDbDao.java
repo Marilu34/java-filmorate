@@ -7,6 +7,7 @@ import org.example.storage.user.storage.FriendDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 @Component
@@ -19,11 +20,15 @@ public class FriendsDbDao implements FriendDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private boolean noExists(int id) {
+        String sql = "select count(*) from USERS where USER_ID = ?";
+        int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return result == 0;
+    }
     @Override
-    public List<Integer> getFriends(int userId) {
+    public List<Integer> getFriendsIdList(int userId) {
         if (noExists(userId)) {
-            log.debug("user id {}", userId);
-            throw new NotFoundException(String.format("User with id %s not found", userId));
+            throw new NotFoundException("Пользователь с id:%s не обнаружен"+ userId);
         }
         String sql = "select FRIEND_ID from FRIENDS where USER_ID = ?";
         return jdbcTemplate.queryForList(sql, Integer.class, userId);
@@ -31,33 +36,33 @@ public class FriendsDbDao implements FriendDao {
 
     @Override
     public void addFriend(int userId, int friendUserId) {
-        checkEqualityIdAndExists(userId, friendUserId);
+        checkUsers(userId, friendUserId);
         String sql = "insert into FRIENDS (USER_ID, FRIEND_ID, FRIEND_STATUS) VALUES (? ,? , false)";
         jdbcTemplate.update(sql, userId, friendUserId);
-        checkAndChangeFriendsStatus(userId, friendUserId);
-        log.debug("user {} friend with user {}", userId, friendUserId);
+        friendsStatus(userId, friendUserId);
+        log.debug("Пользователь {} дружит с Пользователем {}", userId, friendUserId);
     }
 
     @Override
     public void deleteFriend(int userId, int friendUserId) {
-        checkEqualityIdAndExists(userId, friendUserId);
+        checkUsers(userId, friendUserId);
         String sql = "delete from FRIENDS where USER_ID = ? and FRIEND_ID = ?";
         jdbcTemplate.update(sql, userId, friendUserId);
-        log.debug("user {} delete friend {}", userId, friendUserId);
+        log.debug("Пользователь {} удалил из друзей Пользователя {}", userId, friendUserId);
     }
 
-    private void checkEqualityIdAndExists(int userId, int friendUserId) {
+    private void checkUsers(int userId, int friendUserId) {
         if (userId == friendUserId) {
-            log.debug("user {} friend id {}", userId, friendUserId);
-            throw new FriendException(String.format("user id %s = friends id %s", userId, friendUserId));
+            log.debug("Проверка Пользователя {} Проверка друга Пользователя {}", userId, friendUserId);
+            throw new FriendException("id = " +  userId + "Пользователя = id " + friendUserId + " друга Пользователя ");
         }
         if (noExists(userId) || noExists(friendUserId)) {
-            log.debug("User id {} friend id {}", userId, friendUserId);
-            throw new NotFoundException(String.format("Users with id %s, %s not found", userId, friendUserId));
+            log.debug("Проверка Пользователя {} Проверка друга Пользователя {}", userId, friendUserId);
+            throw new NotFoundException(String.format("Пользователи с id:%s не обнаружен", userId, friendUserId));
         }
     }
 
-    private void checkAndChangeFriendsStatus(long userId, long friendUserId) {
+    private void friendsStatus(long userId, long friendUserId) {
         String sql = "select count(*) from FRIENDS where FRIEND_ID = ? and USER_ID = ?";
         Integer result = jdbcTemplate.queryForObject(sql, Integer.class, userId, friendUserId);
         if (result == 1) {
@@ -65,21 +70,5 @@ public class FriendsDbDao implements FriendDao {
             jdbcTemplate.update(sql, userId, friendUserId);
             jdbcTemplate.update(sql, friendUserId, userId);
         }
-    }
-
-    @Override
-    public List<Integer> getUserAllFriendsId(int userId) {
-        if (noExists(userId)) {
-            log.debug("user id {}", userId);
-            throw new NotFoundException(String.format("User with id %s not found", userId));
-        }
-        String sql = "select FRIEND_ID from FRIENDS where USER_ID = ?";
-        return jdbcTemplate.queryForList(sql, Integer.class, userId);
-    }
-
-    private boolean noExists(int id) {
-        String sql = "select count(*) from USERS where USER_ID = ?";
-        int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return result == 0;
     }
 }

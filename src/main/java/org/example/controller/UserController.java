@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        log.info("Пользователь " + user.getEmail() + " был создан");
+        log.info("Пользователь " + user + " был создан");
         return userService.getUserStorage().createUser(user);
     }
 

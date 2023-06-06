@@ -41,7 +41,7 @@ public class UserService {
 
     public List<User> getFriends(int userId) {
         List<User> friendList = new ArrayList<>();
-        for (Integer friendId : friendsDao.getUserAllFriendsId(userId)) {
+        for (Integer friendId : friendsDao.getFriendsIdList(userId)) {
             friendList.add(userStorage.getUserById(friendId));
         }
         return friendList;

@@ -41,6 +41,7 @@ public class FilmService {
 
     public void deleteFilmLike(int filmId, int userId) {
         check(filmId, userId);
+        log.info("Пользователю {} больше не нравится Фильм {}", userId, filmId);
         filmLikeDao.deleteLike(filmId, userId);
     }
     public List<Film> getPopularFilms(int count) {
