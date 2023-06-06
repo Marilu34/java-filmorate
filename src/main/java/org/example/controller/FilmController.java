@@ -7,8 +7,10 @@ import org.example.model.Film;
 
 
 import org.example.service.FilmService;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController()
 @RequestMapping("/films")
+@RunWith(SpringRunner.class)
 public class FilmController {
     private final FilmService filmService;
 
