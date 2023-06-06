@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
-@Component
+@Component("dbFilmStorage")
 @Getter
 @Slf4j
 public class FilmDbStorage implements FilmStorage {

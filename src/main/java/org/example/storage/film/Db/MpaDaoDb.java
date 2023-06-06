@@ -23,7 +23,7 @@ public class MpaDaoDb implements MpaDao {
     }
 
     private boolean noExists(int mpaId) {
-        String sql = "select count (*) from mpa_ratings where RATING_ID = ?";
+        String sql = "select count (*) from mpa where MPA_ID = ?";
         int result = jdbcTemplate.queryForObject(sql, Integer.class, mpaId);
         return result == 0;
     }
@@ -34,19 +34,19 @@ public class MpaDaoDb implements MpaDao {
             log.debug("Ошибка при получении MPA {}", mpaId);
             throw new NotFoundException(String.format("Не обнаружен MPA с id: {}", mpaId));
         }
-        String sql = "select rating_id, rating from mpa_ratings where rating_id = ?";
+        String sql = "select MPA_ID, rating from mpa where MPA_ID = ?";
         return jdbcTemplate.queryForObject(sql, this::makeMpa, mpaId);
     }
 
     @Override
     public Collection<Mpa> getAllMpa() {
-        String sql = "select * from MPA_RATINGS";
+        String sql = "select * from MPA";
         return jdbcTemplate.query(sql, this::makeMpa);
     }
 
     private Mpa makeMpa(ResultSet resultSet, int rowNum) throws SQLException {
         return Mpa.builder().
-                id(resultSet.getInt("rating_id")).
+                id(resultSet.getInt("MPA_ID")).
                 name(resultSet.getString("rating"))
                 .build();
     }

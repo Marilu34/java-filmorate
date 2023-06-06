@@ -15,6 +15,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
+        //("UserServiceDb")
 @Slf4j
 @Getter
 public class UserService {
@@ -23,6 +24,8 @@ public class UserService {
 
     @Autowired
     public UserService(FriendDao friendsDao,
+                       //@Qualifier
+            //("dbUserStorage")
                        UserStorage userStorage) {
         this.friendsDao = friendsDao;
         this.userStorage = userStorage;

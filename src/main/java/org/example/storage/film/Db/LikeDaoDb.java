@@ -22,7 +22,7 @@ public class LikeDaoDb implements LikeDao {
     }
 
     private void check(int id) {
-        String sql = "select count(*) from FILMS_LIKES where FILM_ID = ?";
+        String sql = "select count(*) from LIKES where FILM_ID = ?";
         int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
         if (result != 1) {
             throw new NotFoundException(String.format("Фильм с id:%s не обнаружен", id));
@@ -31,7 +31,7 @@ public class LikeDaoDb implements LikeDao {
 
     @Override
     public void addLike(int filmId, int userId) {
-        String sql = "insert into FILMS_LIKES (film_id, user_id) " +
+        String sql = "insert into LIKES (film_id, user_id) " +
                 "values (?, ?)";
         jdbcTemplate.update(sql, filmId, userId);
         log.debug(" Фильм {} понравился  Пользователю {}", filmId, userId);
@@ -39,7 +39,7 @@ public class LikeDaoDb implements LikeDao {
 
     @Override
     public Set<Integer> getUserLikes(int filmId) {
-        String sql = "select user_id from films_likes where film_id = ?";
+        String sql = "select user_id from likes where film_id = ?";
         List<Integer> usersLike = jdbcTemplate.queryForList(sql, Integer.class, filmId);
         return new HashSet<>(usersLike);
     }
@@ -47,7 +47,7 @@ public class LikeDaoDb implements LikeDao {
     @Override
     public void deleteLike(int filmId, int userId) {
         check(filmId);
-        String sql = "delete from FILMS_LIKES where USER_ID = ? and FILM_ID = ?";
+        String sql = "delete from LIKES where USER_ID = ? and FILM_ID = ?";
         jdbcTemplate.update(sql, userId, filmId);
         log.debug(" Фильм {} больше не нравится Пользователю {}", filmId, userId);
     }

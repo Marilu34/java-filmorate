@@ -8,5 +8,4 @@ public interface FriendDao {
     List<Integer> getFriendsIdList(int userId);
 
     void deleteFriend(int userId, int friendUserId);
-
 }
