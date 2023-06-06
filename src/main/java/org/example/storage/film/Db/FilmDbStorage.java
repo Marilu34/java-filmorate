@@ -29,8 +29,9 @@ public class FilmDbStorage implements FilmStorage {
     private final GenreDao genreDao;
     private final LikeDao filmLikeDao;
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
+
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoDb mpaDao,GenreDaoDb genreDaoImp, LikeDaoDb filmLikeDaoImp) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoDb mpaDao, GenreDaoDb genreDaoImp, LikeDaoDb filmLikeDaoImp) {
         this.jdbcTemplate = jdbcTemplate;
         this.mpaDao = mpaDao;
         this.genreDao = genreDaoImp;
@@ -65,7 +66,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         if (noExists(film.getId())) {
             log.debug("Ошибка при обновлении фильма {}", film.getId());
-            throw new NotFoundException("Не обнаружен Фильм с id: {}"+ film.getId());
+            throw new NotFoundException("Не обнаружен Фильм с id: {}" + film.getId());
         }
         if (film.getGenres() != null) {
             genreDao.updateFilmsGenres(film);
@@ -95,7 +96,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film getFilmById(int filmId) {
         if (noExists(filmId)) {
             log.debug("Ошибка при получении фильма {}", filmId);
-            throw new NotFoundException(String.format("Не обнаружен Фильм с id: {}" +  filmId));
+            throw new NotFoundException(String.format("Не обнаружен Фильм с id: {}" + filmId));
         }
         String sql = "select * from films where film_id = ?";
         return jdbcTemplate.queryForObject(sql, this::makeFilmDb, filmId);
@@ -133,7 +134,7 @@ public class FilmDbStorage implements FilmStorage {
                 .mpa(mpaDao.getMpaFromDb(resultSet.getInt("mpa_id")))
                 .rate(resultSet.getInt("film_rate"))
                 .genres(getGenres(resultSet.getInt("film_id")))
-                .usersLike(filmLikeDao.getUserLikes( resultSet.getInt("film_id"))).build();
+                .usersLike(filmLikeDao.getUserLikes(resultSet.getInt("film_id"))).build();
     }
 
     private Set<Genres> getGenres(int rowNum) {

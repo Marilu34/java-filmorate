@@ -7,8 +7,6 @@ import org.example.model.Film;
 
 
 import org.example.service.FilmService;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +41,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film  updateFilm(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         checkFilm(film.getId(), true);
         log.info("Фильм " + film.getName() + " с id =" + film.getId() + " обновлен");
         return filmService.getFilmStorage().updateFilm(film);

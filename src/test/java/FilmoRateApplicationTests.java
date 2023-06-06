@@ -11,7 +11,6 @@ import org.example.storage.film.Db.LikeDaoDb;
 import org.example.storage.film.Db.MpaDaoDb;
 import org.example.storage.user.Db.FriendsDbDao;
 import org.example.storage.user.Db.UserDbStorage;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +42,10 @@ class FilmoRateApplicationTests {
 
     private static final Film film = new Film(1, "Test film", "Test", LocalDate.of(2000, 1, 1),
             100, new HashSet<>(), new HashSet<>(), Mpa.builder().id(1).name("G").build(), 3);
+
     @BeforeEach
     public void deleteUser() {
-        if(!userStorage.getAllUsers().isEmpty()) {
+        if (!userStorage.getAllUsers().isEmpty()) {
             userStorage.deleteAllUsers();
         }
         if (!filmStorage.getAllFilms().isEmpty()) {
@@ -67,7 +67,7 @@ class FilmoRateApplicationTests {
 
         userStorage.createUser(user);
         Optional<User> userOptional = Optional.ofNullable(userStorage.getUserById(6));
-       assertThat(userOptional).isPresent()
+        assertThat(userOptional).isPresent()
                 .hasValueSatisfying(user1 ->
                         assertThat(user1).hasFieldOrPropertyWithValue("id", 6));
     }
@@ -86,16 +86,19 @@ class FilmoRateApplicationTests {
         assertTrue(userOptional.isPresent());
         assertEquals(updatedUser, userOptional.get());
     }
+
     @Test
     public void testDeleteUser() {
-      //  userStorage.deleteUser(1);
+        //  userStorage.deleteUser(1);
         assertThrows(NotFoundException.class, () -> userStorage.getUserById(1));
     }
+
     @Test
     public void testDeleteAllUsers() {
         userStorage.deleteAllUsers();
         assertTrue(userStorage.getAllUsers().isEmpty());
     }
+
     @Test
     public void testAddAndGetFriend() {
         User user1 = userStorage.createUser(user);
@@ -110,6 +113,7 @@ class FilmoRateApplicationTests {
         friendsDbDao.addFriend(user1.getId(), friend.getId());
         assertTrue(friendsDbDao.getFriendsIdList(user1.getId()).contains(friend.getId()));
     }
+
     @Test
     public void testDeleteFriend() {
         User user1 = userStorage.createUser(user);
@@ -137,11 +141,13 @@ class FilmoRateApplicationTests {
                         assertThat(film).hasFieldOrPropertyWithValue("id", 4)
                 );
     }
+
     @Test
     public void createFilm() throws ValidationException {
         filmStorage.createFilm(film);
         assertEquals(filmStorage.getAllFilms().size(), 1);
     }
+
     @Test
     public void testUpdateFilm() {
         // Создаем фильм и сохраняем его в хранилище
@@ -166,36 +172,42 @@ class FilmoRateApplicationTests {
         assertTrue(filmOptional.isPresent());
         assertEquals(updatedFilm, filmOptional.get());
     }
+
     @Test
     public void testDeleteAllFilm() {
         filmStorage.deleteAllFilms();
         assertTrue(filmStorage.getAllFilms().isEmpty());
     }
+
     @Test
     public void testDeleteFilm() {
         filmStorage.createFilm(film);
         filmStorage.deleteFilm(5);
         assertTrue(filmStorage.getAllFilms().isEmpty());
     }
+
     @Test
     public void testGetAllMpaRatings() {
         assertEquals(5, mpaStorage.getAllMpa().size());
     }
+
     @Test
     public void testGetAllFilms() {
         assertTrue(filmStorage.getAllFilms().isEmpty());
     }
+
     @Test
     public void testGetMpaRatingsById() {
         assertEquals("G", mpaStorage.getMpaFromDb(1).getName());
     }
+
     @Test
     void shouldAddAndGetLikes() {
         Film film1 = filmStorage.createFilm(film);
         List<User> users = new ArrayList<>();
         userStorage.createUser(user);
-    users.add(user);
-    Set<Integer> emptyLikes = likeStorage.getUserLikes(film1.getId());
+        users.add(user);
+        Set<Integer> emptyLikes = likeStorage.getUserLikes(film1.getId());
         assertTrue(emptyLikes.isEmpty());
 
         users.forEach(user -> likeStorage.addLike(film1.getId(), user.getId()));
@@ -204,6 +216,7 @@ class FilmoRateApplicationTests {
         assertEquals(likes.size(), users.size());
         users.forEach(user -> assertTrue(likes.contains(user.getId())));
     }
+
     @Test
     void shouldDeleteLikes() {
         Film film2 = filmStorage.createFilm(film);
@@ -213,7 +226,7 @@ class FilmoRateApplicationTests {
 
 
         likeStorage.addLike(film2.getId(), users.get(0).getId());
-        Set<Integer>likes = likeStorage.getUserLikes(film2.getId());
+        Set<Integer> likes = likeStorage.getUserLikes(film2.getId());
         assertEquals(likes.size(), 1);
 
         likeStorage.deleteLike(film2.getId(), users.get(0).getId());

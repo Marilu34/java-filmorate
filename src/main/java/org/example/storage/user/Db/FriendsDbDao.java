@@ -25,10 +25,11 @@ public class FriendsDbDao implements FriendDao {
         int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
         return result == 0;
     }
+
     @Override
     public List<Integer> getFriendsIdList(int userId) {
         if (noExists(userId)) {
-            throw new NotFoundException("Пользователь с id:%s не обнаружен"+ userId);
+            throw new NotFoundException("Пользователь с id:%s не обнаружен" + userId);
         }
         String sql = "select FRIEND_ID from FRIENDS where USER_ID = ?";
         return jdbcTemplate.queryForList(sql, Integer.class, userId);
@@ -54,7 +55,7 @@ public class FriendsDbDao implements FriendDao {
     private void checkUsers(int userId, int friendUserId) {
         if (userId == friendUserId) {
             log.debug("Проверка Пользователя {} Проверка друга Пользователя {}", userId, friendUserId);
-            throw new FriendException("id = " +  userId + "Пользователя = id " + friendUserId + " друга Пользователя ");
+            throw new FriendException("id = " + userId + "Пользователя = id " + friendUserId + " друга Пользователя ");
         }
         if (noExists(userId) || noExists(friendUserId)) {
             log.debug("Проверка Пользователя {} Проверка друга Пользователя {}", userId, friendUserId);

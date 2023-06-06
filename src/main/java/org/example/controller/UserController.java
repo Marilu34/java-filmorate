@@ -3,7 +3,6 @@ package org.example.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.User;
 import org.example.service.UserService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

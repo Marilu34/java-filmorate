@@ -1,4 +1,5 @@
 package org.example.service;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
@@ -6,11 +7,11 @@ import org.example.storage.film.Db.LikeDaoDb;
 import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.example.model.Film;
 
 @Service
@@ -25,9 +26,10 @@ public class FilmService {
         this.filmStorage = filmStorage;
         this.filmLikeDao = filmLikeDaoImp;
     }
+
     private void check(int filmId, int userId) {
         log.debug("Проверка Пользователя {} Проверка Фильма {}", userId, filmId);
-        if ( filmId <= 0 || userId <= 0) {
+        if (filmId <= 0 || userId <= 0) {
             throw new NotFoundException(String.format("Пользователя с id:%s или Фильма с id:%s не обнаружено",
                     userId, filmId));
         }
@@ -44,6 +46,7 @@ public class FilmService {
         log.info("Пользователю {} больше не нравится Фильм {}", userId, filmId);
         filmLikeDao.deleteLike(filmId, userId);
     }
+
     public List<Film> getPopularFilms(int count) {
         return filmStorage.getAllFilms().stream()
                 .sorted((p0, p1) -> p1.getUsersLike().size() - p0.getUsersLike().size())
