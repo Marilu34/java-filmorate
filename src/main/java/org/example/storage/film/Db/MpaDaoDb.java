@@ -45,9 +45,9 @@ public class MpaDaoDb implements MpaDao {
     }
 
     private Mpa makeMpa(ResultSet resultSet, int rowNum) throws SQLException {
-        return Mpa.builder().
-                id(resultSet.getInt("MPA_ID")).
-                name(resultSet.getString("rating"))
+        return Mpa.builder()
+                .id(resultSet.getInt("MPA_ID"))
+                .name(resultSet.getString("rating"))
                 .build();
     }
 }
