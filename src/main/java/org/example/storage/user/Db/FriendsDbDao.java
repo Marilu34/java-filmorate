@@ -58,7 +58,7 @@ public class FriendsDbDao implements FriendDao {
         }
         if (noExists(userId) || noExists(friendUserId)) {
             log.debug("Проверка Пользователя {} Проверка друга Пользователя {}", userId, friendUserId);
-            throw new NotFoundException(String.format("Пользователи с id:%s не обнаружен", userId, friendUserId));
+            throw new NotFoundException("Пользователь с id =" +  userId + " и Пользователь с id = "+ friendUserId +" не обнаружены");
         }
     }
 

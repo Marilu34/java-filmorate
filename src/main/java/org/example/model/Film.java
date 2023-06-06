@@ -30,7 +30,7 @@ public class Film {
 
     private Set<Integer> usersLike;
 
-    private Set<Genres> genres;
+     Set<Genres> genres;
     private Mpa mpa;
     private int rate;
 
