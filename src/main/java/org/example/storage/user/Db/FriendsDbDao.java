@@ -1,10 +1,10 @@
 package org.example.storage.user.Db;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.FriendException;
 import org.example.storage.user.storage.FriendDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +12,10 @@ import java.util.List;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FriendsDbDao implements FriendDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public FriendsDbDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     private boolean noExists(int id) {
         String sql = "select count(*) from USERS where USER_ID = ?";

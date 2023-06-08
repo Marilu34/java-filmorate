@@ -1,10 +1,10 @@
 package org.example.storage.film.Db;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Mpa;
 import org.example.exceptions.NotFoundException;
 import org.example.storage.film.storage.MpaDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,13 +14,10 @@ import java.util.Collection;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class MpaDaoDb implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public MpaDaoDb(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     private boolean noExists(int mpaId) {
         String sql = "select count (*) from mpa where MPA_ID = ?";

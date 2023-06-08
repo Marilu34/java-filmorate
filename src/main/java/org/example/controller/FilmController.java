@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.AlreadyExistException;
 import org.example.exceptions.NotFoundException;
@@ -18,14 +19,9 @@ import java.util.List;
 @Slf4j
 @RestController()
 @RequestMapping("/films")
-
+@RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
-
-
-    public FilmController(FilmService filmService) {
-        this.filmService = filmService;
-    }
 
     @PostMapping
     public Film createFilm(@Validated @RequestBody Film film) {

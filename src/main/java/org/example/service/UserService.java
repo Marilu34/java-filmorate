@@ -1,12 +1,12 @@
 package org.example.service;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.model.User;
 import org.example.storage.user.storage.FriendDao;
 import org.example.storage.user.storage.UserStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,15 +17,11 @@ import static java.util.stream.Collectors.toList;
 @Service
 @Slf4j
 @Getter
+@RequiredArgsConstructor
 public class UserService {
     private final FriendDao friendsDao;
     private final UserStorage userStorage;
 
-    @Autowired
-    public UserService(FriendDao friendsDao, UserStorage userStorage) {
-        this.friendsDao = friendsDao;
-        this.userStorage = userStorage;
-    }
 
     private void check(int userId, int friendId) {
         if (userId <= 0 || friendId <= 0) {

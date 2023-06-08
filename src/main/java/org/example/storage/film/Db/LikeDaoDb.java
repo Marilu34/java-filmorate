@@ -1,9 +1,9 @@
 package org.example.storage.film.Db;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.storage.film.storage.LikeDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +13,10 @@ import java.util.Set;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class LikeDaoDb implements LikeDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public LikeDaoDb(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     private void check(int id) {
         String sql = "select count(*) from LIKES where FILM_ID = ?";

@@ -1,20 +1,17 @@
 package org.example.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.model.Genres;
 import org.example.storage.film.storage.GenreDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
+@RequiredArgsConstructor
 public class GenreService {
     private final GenreDao genreDao;
 
-    @Autowired
-    public GenreService(GenreDao genreDao) {
-        this.genreDao = genreDao;
-    }
 
     public Collection<Genres> getAllGenres() {
         return genreDao.getAllGenres();

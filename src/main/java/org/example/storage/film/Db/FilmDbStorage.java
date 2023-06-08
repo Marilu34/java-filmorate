@@ -1,6 +1,7 @@
 package org.example.storage.film.Db;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
@@ -9,7 +10,6 @@ import org.example.model.Genres;
 import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
 import org.example.storage.film.storage.GenreDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -23,6 +23,7 @@ import java.util.*;
 @Component("dbFilmStorage")
 @Getter
 @Slf4j
+@RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaDaoDb mpaDao;
@@ -30,13 +31,6 @@ public class FilmDbStorage implements FilmStorage {
     private final LikeDao filmLikeDao;
     private static final LocalDate FIRST_FILM_RELEASE = LocalDate.of(1895, 12, 28);
 
-    @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDaoDb mpaDao, GenreDaoDb genreDaoImp, LikeDaoDb filmLikeDaoImp) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.mpaDao = mpaDao;
-        this.genreDao = genreDaoImp;
-        this.filmLikeDao = filmLikeDaoImp;
-    }
 
     @Override
     public Film createFilm(Film film) {

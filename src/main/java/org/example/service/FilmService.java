@@ -1,12 +1,11 @@
 package org.example.service;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
-import org.example.storage.film.Db.LikeDaoDb;
 import org.example.storage.film.storage.LikeDao;
 import org.example.storage.film.storage.FilmStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,15 +16,11 @@ import org.example.model.Film;
 @Service
 @Getter
 @Slf4j
+@RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
     private final LikeDao filmLikeDao;
 
-    @Autowired
-    public FilmService(FilmStorage filmStorage, LikeDaoDb filmLikeDaoImp) {
-        this.filmStorage = filmStorage;
-        this.filmLikeDao = filmLikeDaoImp;
-    }
 
     private void check(int filmId, int userId) {
         log.debug("Проверка Пользователя {} Проверка Фильма {}", userId, filmId);

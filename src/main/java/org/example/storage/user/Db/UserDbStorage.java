@@ -1,12 +1,12 @@
 package org.example.storage.user.Db;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.ValidationException;
 import org.example.model.User;
 import org.example.storage.user.storage.UserStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -21,15 +21,11 @@ import java.util.HashSet;
 @Slf4j
 @Component
 @Getter
+@RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FriendsDbDao friendsDao;
 
-    @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate, FriendsDbDao friendsDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.friendsDao = friendsDao;
-    }
 
     @Override
     public User createUser(User user) {

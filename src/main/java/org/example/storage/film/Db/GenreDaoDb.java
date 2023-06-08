@@ -1,27 +1,29 @@
 package org.example.storage.film.Db;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.NotFoundException;
 import org.example.model.Film;
 import org.example.model.Genres;
 import org.example.storage.film.storage.GenreDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.Collection;
+
+import java.util.Set;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class GenreDaoDb implements GenreDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public GenreDaoDb(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public Genres getGenreFromDb(int genreId) {
@@ -46,12 +48,25 @@ public class GenreDaoDb implements GenreDao {
 
     @Override
     public void addFilmsGenres(Film film) {
+
         String sql = "insert into films_genres (film_id, genre_id) " +
                 "values (?, ?)";
-        for (Genres genre : film.getGenres()) {
-            jdbcTemplate.update(sql, film.getId(), genre.getId());
-        }
+        Set<Genres> genreSet = film.getGenres();
+        int filmId = film.getId();
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Genres genre = (Genres) genreSet.toArray()[i];
+                ps.setInt(1, filmId);
+                ps.setInt(2, genre.getId());
+            }
+
+
+            public int getBatchSize() {
+                return genreSet.size();
+            }
+        });
     }
+
 
     @Override
     public void updateFilmsGenres(Film film) {

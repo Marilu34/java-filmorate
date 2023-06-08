@@ -1,8 +1,8 @@
 package org.example.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.model.Mpa;
 import org.example.service.MpaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +12,9 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/mpa")
+@RequiredArgsConstructor
 public class RatingController {
     private final MpaService mpaService;
-
-    @Autowired
-    public RatingController(MpaService mpaService) {
-        this.mpaService = mpaService;
-    }
 
     @GetMapping
     public Collection<Mpa> getAllRatings() {
