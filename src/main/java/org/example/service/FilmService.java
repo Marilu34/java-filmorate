@@ -1,48 +1,51 @@
 package org.example.service;
 
-import org.example.model.Film;
-import org.example.storage.film.FilmStorage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.NotFoundException;
+import org.example.storage.film.storage.LikeDao;
+import org.example.storage.film.storage.FilmStorage;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.example.model.Film;
 
 @Service
+@Getter
+@Slf4j
+@RequiredArgsConstructor
 public class FilmService {
-
     private final FilmStorage filmStorage;
+    private final LikeDao filmLikeDao;
 
-    @Autowired
-    public FilmService(FilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
+
+    private void check(int filmId, int userId) {
+        log.debug("Проверка Пользователя {} Проверка Фильма {}", userId, filmId);
+        if (filmId <= 0 || userId <= 0) {
+            throw new NotFoundException(String.format("Пользователя с id:%s или Фильма с id:%s не обнаружено",
+                    userId, filmId));
+        }
     }
 
-    public ArrayList<Film> getAll() {
-        return filmStorage.getAllFilms();
+    public void addFilmLike(int filmId, int userId) {
+        check(filmId, userId);
+        log.debug("Пользователю {} понравился Фильм {}", userId, filmId);
+        filmLikeDao.addLike(filmId, userId);
     }
 
-    public Film add(Film film) {
-        return filmStorage.createFilm(film);
+    public void deleteFilmLike(int filmId, int userId) {
+        check(filmId, userId);
+        log.info("Пользователю {} больше не нравится Фильм {}", userId, filmId);
+        filmLikeDao.deleteLike(filmId, userId);
     }
 
-    public Film update(Film film) {
-        return filmStorage.updateFilm(film);
-    }
-
-    public void addLike(int filmId, int userId) {
-        filmStorage.addLike(filmId, userId);
-    }
-
-    public void deleteLike(int filmId, int userId) {
-        filmStorage.deleteLike(filmId, userId);
-    }
-
-    public ArrayList<Film> getMostPopularFilms(Integer id) {
-        return filmStorage.getPopularFilms(id);
-    }
-
-    public Film getFilmById(Integer filmId) {
-        return filmStorage.getFilmById(filmId);
+    public List<Film> getPopularFilms(int count) {
+        return filmStorage.getAllFilms().stream()
+                .sorted((p0, p1) -> p1.getUsersLike().size() - p0.getUsersLike().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }

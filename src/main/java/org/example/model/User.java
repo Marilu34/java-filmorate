@@ -1,32 +1,39 @@
 package org.example.model;
 
 import lombok.*;
-import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class User {
-
     private int id;
-    @NotNull
-    @Email(message = "email должно содержать символы или цифры")
+    @Email(message = "email not valid")
     private String email;
-
-    @NotNull
-    @NotBlank(message = "Логин не может быть пустым!")
+    @NotBlank(message = "login not valid")
     private String login;
-
-    @Nullable
     private String name;
-
-    @Past
+    @Past(message = "birthday in future")
+    @NonNull
     private LocalDate birthday;
+    private Set<Integer> friendsId;
 
-    private Set<Integer> friendsIds = new HashSet<>();
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("user_name", name);
+        values.put("email", email);
+        values.put("login", login);
+        values.put("birthday", birthday);
+        return values;
+    }
 }

@@ -4,28 +4,44 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
+@ToString
+@EqualsAndHashCode
 public class Film {
-
     private int id;
-
-    @NotNull(message = "Имя должно содержать символы")
-    @NotEmpty
+    @NotBlank(message = "name is blank")
     private String name;
-
-    @Size(max = 200, message = "вместимость описания до 200 символов")
+    @NotBlank(message = "description is blank")
+    @Size(max = 200, message = "max size description 200 symbols")
     private String description;
-
-    @Past(message = "дата выпуска не должна быть будущей")
+    @Past(message = "release date cannot be in future")
     private LocalDate releaseDate;
+    @NotNull
+    @Positive(message = "duration is negative")
+    private Integer duration;
 
-    @Positive(message = "продолжительность должна быть отрицательной")
-    private int duration;
+    private Set<Integer> usersLike;
 
-    private Set<Integer> userIdLikes = new HashSet<>();
+    private Set<Genres> genres;
+    private Mpa mpa;
+    private int rate;
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("film_name", name);
+        values.put("description", description);
+        values.put("release_date", releaseDate);
+        values.put("duration", duration);
+        values.put("mpa_id", mpa.getId());
+        values.put("film_rate", rate);
+        return values;
+    }
 }
